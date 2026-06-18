@@ -27,13 +27,29 @@ export default async function DiagnosisResultPage() {
     specialist: result.score_specialist,
   };
 
-  // 同タイプの企業を取得
+  // マッチングスコア済みの企業を取得（企業診断済みの場合）
+  const { data: matchScores } = await supabase
+    .from("matching_scores")
+    .select("company_id, score")
+    .eq("user_id", user.id);
+
+  const scoreMap = new Map(matchScores?.map((s) => [s.company_id, s.score]) ?? []);
+
+  // 同タイプの企業を6社取得
   const { data: matchedCompanies } = await supabase
     .from("companies")
     .select("*, regions(name)")
     .eq("status", "approved")
     .eq("values_type", result.values_type)
-    .limit(3);
+    .limit(6);
+
+  // おすすめ求人（同タイプ）
+  const { data: matchedJobs } = await supabase
+    .from("jobs")
+    .select("id, title, location, employment_type, salary_min, salary_max, companies(company_name)")
+    .eq("is_published", true)
+    .eq("values_type", result.values_type)
+    .limit(4);
 
   return (
     <div className="bg-[var(--color-surface)] min-h-screen">
@@ -52,13 +68,68 @@ export default async function DiagnosisResultPage() {
               あなたにおすすめの企業
             </h2>
             <p className="text-sm text-[var(--color-text-secondary)] mb-6">
-              同じ価値観タイプの企業を厳選しました。
+              価値観タイプが一致する淡路島の企業です。
             </p>
-            <div className="flex flex-col gap-4">
-              {matchedCompanies.map((c) => (
-                <CompanyCard key={c.id} company={c} />
-              ))}
+            <div className="flex flex-col gap-6">
+              {matchedCompanies.map((c) => {
+                const matchScore = scoreMap.get(c.id);
+                return (
+                  <div key={c.id} className="relative">
+                    {matchScore !== undefined && (
+                      <div className="absolute top-0 right-0 z-10 bg-[var(--color-brand)] text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
+                        マッチ度 {matchScore}%
+                      </div>
+                    )}
+                    <CompanyCard company={c} />
+                  </div>
+                );
+              })}
             </div>
+            <Link href="/companies" className="block mt-6 text-center text-sm text-[var(--color-brand)] hover:underline">
+              すべての企業を見る →
+            </Link>
+          </div>
+        )}
+
+        {/* おすすめ求人 */}
+        {matchedJobs && matchedJobs.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">
+              おすすめの求人
+            </h2>
+            <p className="text-sm text-[var(--color-text-secondary)] mb-6">
+              あなたの価値観に合った求人をピックアップしました。
+            </p>
+            <div className="flex flex-col gap-3">
+              {matchedJobs.map((job) => {
+                const companyName = Array.isArray(job.companies)
+                  ? job.companies[0]?.company_name
+                  : (job.companies as { company_name: string } | null)?.company_name;
+                return (
+                  <Link
+                    key={job.id}
+                    href={`/jobs/${job.id}`}
+                    className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm px-5 py-4 flex justify-between items-center hover:border-[var(--color-brand)] transition-colors group"
+                  >
+                    <div>
+                      <p className="text-xs text-[var(--color-text-muted)] mb-1">{companyName}</p>
+                      <p className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-brand)] transition-colors">
+                        {job.title}
+                      </p>
+                      <p className="text-xs text-[var(--color-text-muted)] mt-1">{job.location}</p>
+                    </div>
+                    {job.salary_min && (
+                      <p className="text-sm font-bold text-[var(--color-brand)] shrink-0 ml-4">
+                        {job.salary_min}〜{job.salary_max}万
+                      </p>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+            <Link href="/jobs" className="block mt-6 text-center text-sm text-[var(--color-brand)] hover:underline">
+              すべての求人を見る →
+            </Link>
           </div>
         )}
 

@@ -9,6 +9,26 @@ import Input from "@/components/ui/Input";
 export default function RegisterPage() {
   const [state, action, pending] = useActionState(registerAction, undefined);
 
+  if (state?.emailSent) {
+    return (
+      <div className="w-full max-w-sm text-center">
+        <Link href="/" className="text-2xl font-bold text-[var(--color-brand)] block mb-6">
+          HATARAKU+
+        </Link>
+        <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm p-8">
+          <p className="text-4xl mb-4">📧</p>
+          <h2 className="font-bold text-[var(--color-text-primary)] text-lg mb-2">確認メールを送信しました</h2>
+          <p className="text-sm text-[var(--color-text-secondary)]">
+            メールボックスをご確認いただき、リンクをクリックして登録を完了してください。
+          </p>
+          <Link href="/login" className="block mt-6">
+            <Button variant="outline" className="w-full">ログインページへ</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
