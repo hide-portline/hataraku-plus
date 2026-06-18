@@ -1,50 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #2F4F7F;
-  --color-brand-light: #3D6499;
-  --color-brand-dark: #1E3356;
-  --color-accent: #FF7A00;
-  --color-accent-light: #FF9233;
-  --color-accent-dark: #CC6200;
-  --color-surface: #F8F9FC;
-  --color-border: #E2E8F0;
-  --color-text-primary: #1A202C;
-  --color-text-secondary: #64748B;
-  --color-text-muted: #94A3B8;
-  --font-sans: "Noto Sans JP", system-ui, sans-serif;
+  --color-brand: #2D3A4B;
+  --color-brand-light: #3D5069;
+  --color-brand-dark: #1A2535;
+  --color-accent: #E8792A;
+  --color-accent-light: #F59045;
+  --color-accent-dark: #C4601A;
+  --color-surface: #F7F7F5;
+  --color-border: #E4E4E0;
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #6B6B6B;
+  --color-text-muted: #ABABAB;
+  --font-sans: "Plus Jakarta Sans", "Noto Sans JP", system-ui, sans-serif;
 }
 
 :root {
-  --color-brand: #2F4F7F;
-  --color-brand-light: #3D6499;
-  --color-brand-dark: #1E3356;
-  --color-accent: #FF7A00;
-  --color-accent-light: #FF9233;
-  --color-accent-dark: #CC6200;
-  --color-surface: #F8F9FC;
-  --color-border: #E2E8F0;
-  --color-text-primary: #1A202C;
-  --color-text-secondary: #64748B;
-  --color-text-muted: #94A3B8;
-  --font-sans: "Noto Sans JP", system-ui, sans-serif;
+  --color-brand: #2D3A4B;
+  --color-brand-light: #3D5069;
+  --color-brand-dark: #1A2535;
+  --color-accent: #E8792A;
+  --color-accent-light: #F59045;
+  --color-accent-dark: #C4601A;
+  --color-surface: #F7F7F5;
+  --color-border: #E4E4E0;
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #6B6B6B;
+  --color-text-muted: #ABABAB;
+  --font-sans: "Plus Jakarta Sans", "Noto Sans JP", system-ui, sans-serif;
 }
 
 body {
-  background-color: var(--color-surface);
+  background-color: #ffffff;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-/* スクロールバーを細くする */
-::-webkit-scrollbar {
-  width: 6px;
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+.animate-marquee {
+  animation: marquee 20s linear infinite;
 }
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
