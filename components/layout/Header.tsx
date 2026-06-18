@@ -1,18 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import Logo from "./Logo";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[var(--color-border)] shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
         {/* ロゴ */}
         <Link href="/" className="shrink-0">
-          <Logo size="sm" />
+          <Image
+            src="/logo.png"
+            alt="Hataraku+ 淡路島"
+            width={120}
+            height={48}
+            className="h-16 w-auto"
+            priority
+          />
         </Link>
 
         {/* デスクトップナビ */}
