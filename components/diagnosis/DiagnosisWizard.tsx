@@ -21,6 +21,7 @@ export default function DiagnosisWizard({ questions }: { questions: Question[] }
   const [answers, setAnswers] = useState<DiagnosisAnswer[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const current = questions[index];
   const progress = ((index) / questions.length) * 100;
@@ -32,6 +33,7 @@ export default function DiagnosisWizard({ questions }: { questions: Question[] }
 
   const handleNext = async () => {
     if (!selected) return;
+    setError(null);
     const opt = current.diagnosis_options.find((o) => o.id === selected)!;
     const newAnswer: DiagnosisAnswer = {
       questionId: current.id,
@@ -47,7 +49,12 @@ export default function DiagnosisWizard({ questions }: { questions: Question[] }
 
     if (isLast) {
       setSubmitting(true);
-      await submitUserDiagnosis(updated);
+      try {
+        await submitUserDiagnosis(updated);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "予期せぬエラーが発生しました");
+        setSubmitting(false);
+      }
     } else {
       setIndex(index + 1);
       const next = questions[index + 1];
@@ -115,6 +122,12 @@ export default function DiagnosisWizard({ questions }: { questions: Question[] }
             ))}
         </div>
       </div>
+
+      {error && (
+        <div className="mb-4 rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* ナビゲーション */}
       <div className="flex gap-3">

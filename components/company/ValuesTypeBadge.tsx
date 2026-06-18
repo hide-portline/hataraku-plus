@@ -1,17 +1,19 @@
 import type { ValuesType } from "@/types/database";
-import { VALUES_TYPE_LABELS, VALUES_TYPE_ICONS, VALUES_TYPE_COLORS } from "@/lib/utils/diagnosis";
+import { VALUES_TYPE_COLORS } from "@/lib/utils/diagnosis";
+
+const shortLabel: Record<ValuesType, string> = {
+  challenger: "Challenger",
+  stable:     "Stable",
+  team:       "Team",
+  specialist: "Specialist",
+};
 
 type Props = { type: ValuesType; size?: "sm" | "md" };
 
 export default function ValuesTypeBadge({ type, size = "sm" }: Props) {
   return (
-    <span
-      className={`inline-flex items-center gap-1 font-semibold rounded-full border
-        ${VALUES_TYPE_COLORS[type]}
-        ${size === "sm" ? "text-xs px-2.5 py-0.5" : "text-sm px-3 py-1"}`}
-    >
-      <span>{VALUES_TYPE_ICONS[type]}</span>
-      {VALUES_TYPE_LABELS[type]}
+    <span className={`inline-flex items-center gap-2 rounded-full border px-2 py-1 text-[var(--color-text-secondary)] font-semibold tracking-wide ${size === "sm" ? "text-[10px]" : "text-xs px-3 py-1"} ${VALUES_TYPE_COLORS[type]}`}>
+      {shortLabel[type]}
     </span>
   );
 }

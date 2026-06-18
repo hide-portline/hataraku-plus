@@ -28,6 +28,7 @@ export default function CompanyDiagnosisWizard({
   const [selected, setSelected] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const current = questions[index];
   const progress = (index / questions.length) * 100;
@@ -35,6 +36,7 @@ export default function CompanyDiagnosisWizard({
 
   const handleNext = async () => {
     if (!selected) return;
+    setError(null);
     const opt = current.diagnosis_options.find((o) => o.id === selected)!;
     const newAnswer: DiagnosisAnswer = {
       questionId: current.id,
@@ -47,8 +49,13 @@ export default function CompanyDiagnosisWizard({
 
     if (isLast) {
       setSubmitting(true);
-      await submitCompanyDiagnosis(companyId, updated);
-      setDone(true);
+      try {
+        await submitCompanyDiagnosis(companyId, updated);
+        setDone(true);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "予期せぬエラーが発生しました");
+        setSubmitting(false);
+      }
     } else {
       setIndex(index + 1);
       const next = questions[index + 1];
@@ -113,6 +120,11 @@ export default function CompanyDiagnosisWizard({
         </div>
       </div>
 
+      {error && (
+        <div className="mb-4 rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
       <div className="flex gap-3">
         {index > 0 && (
           <button onClick={handleBack} className="flex-1 py-3 rounded-full border border-[var(--color-border)] text-sm font-semibold text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] transition-colors">

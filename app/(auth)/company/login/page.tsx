@@ -1,8 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { useActionState } from "react";
+import { companyLoginAction } from "@/lib/actions/auth";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
 export default function CompanyLoginPage() {
+  const [state, action, pending] = useActionState(companyLoginAction, undefined);
+
   return (
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
@@ -12,11 +18,14 @@ export default function CompanyLoginPage() {
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">企業ログイン</h1>
       </div>
 
-      <form className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm p-6 flex flex-col gap-4">
-        <Input id="email" label="メールアドレス" type="email" placeholder="company@example.com" />
-        <Input id="password" label="パスワード" type="password" placeholder="••••••••" />
-        <Button type="submit" className="w-full mt-2">
-          ログイン
+      <form action={action} className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm p-6 flex flex-col gap-4">
+        {state?.error && (
+          <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{state.error}</p>
+        )}
+        <Input id="email" name="email" label="メールアドレス" type="email" placeholder="company@example.com" required />
+        <Input id="password" name="password" label="パスワード" type="password" placeholder="••••••••" required />
+        <Button type="submit" className="w-full mt-2" disabled={pending}>
+          {pending ? "ログイン中..." : "ログイン"}
         </Button>
       </form>
 

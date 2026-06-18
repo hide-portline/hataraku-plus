@@ -8,13 +8,13 @@ import type { DiagnosisAnswer } from "@/lib/utils/diagnosis";
 export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "ログインが必要です" };
+  if (!user) redirect("/login");
 
   const scores = calcScores(answers);
   const type = dominantType(scores);
 
   // 回答を保存
-  await supabase.from("user_diagnosis_answers").insert(
+  const { error: insertError } = await supabase.from("user_diagnosis_answers").insert(
     answers.map((a) => ({
       user_id: user.id,
       question_id: a.questionId,
@@ -22,9 +22,10 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
       score: a.score,
     }))
   );
+  if (insertError) throw new Error(insertError.message);
 
   // 結果を保存（既存は上書き）
-  await supabase.from("user_diagnosis_results").upsert({
+  const { error: upsertError } = await supabase.from("user_diagnosis_results").upsert({
     user_id: user.id,
     values_type: type,
     score_challenger: scores.challenger,
@@ -32,6 +33,7 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
     score_team: scores.team,
     score_specialist: scores.specialist,
   }, { onConflict: "user_id" });
+  if (upsertError) throw new Error(upsertError.message);
 
   redirect("/diagnosis/result");
 }
@@ -39,12 +41,12 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
 export async function submitCompanyDiagnosis(companyId: string, answers: DiagnosisAnswer[]) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "ログインが必要です" };
+  if (!user) redirect("/company/login");
 
   const scores = calcScores(answers);
   const type = dominantType(scores);
 
-  await supabase.from("company_diagnosis_answers").insert(
+  const { error: insertError } = await supabase.from("company_diagnosis_answers").insert(
     answers.map((a) => ({
       company_id: companyId,
       question_id: a.questionId,
@@ -52,8 +54,9 @@ export async function submitCompanyDiagnosis(companyId: string, answers: Diagnos
       score: a.score,
     }))
   );
+  if (insertError) throw new Error(insertError.message);
 
-  await supabase.from("company_diagnosis_results").upsert({
+  const { error: upsertError } = await supabase.from("company_diagnosis_results").upsert({
     company_id: companyId,
     values_type: type,
     score_challenger: scores.challenger,
@@ -61,9 +64,10 @@ export async function submitCompanyDiagnosis(companyId: string, answers: Diagnos
     score_team: scores.team,
     score_specialist: scores.specialist,
   }, { onConflict: "company_id" });
+  if (upsertError) throw new Error(upsertError.message);
 
-  // 企業の values_type も更新
-  await supabase.from("companies").update({ values_type: type }).eq("id", companyId);
+  const { error: updateCompanyError } = await supabase.from("companies").update({ values_type: type }).eq("id", companyId);
+  if (updateCompanyError) throw new Error(updateCompanyError.message);
 
   return { success: true };
 }

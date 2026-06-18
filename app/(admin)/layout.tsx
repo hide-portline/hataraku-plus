@@ -17,6 +17,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((email) => email.trim().toLowerCase()).filter(Boolean);
+  if (adminEmails && adminEmails.length > 0) {
+    const email = user.email?.toLowerCase();
+    if (!email || !adminEmails.includes(email)) redirect("/login");
+  }
+
   return (
     <div className="min-h-screen flex">
       <aside className="w-52 bg-gray-900 text-white shrink-0 flex flex-col">

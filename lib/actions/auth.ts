@@ -41,7 +41,10 @@ export async function logoutAction() {
   redirect("/");
 }
 
-export async function companyLoginAction(formData: FormData) {
+export async function companyLoginAction(
+  _prevState: { error: string } | undefined,
+  formData: FormData
+) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const supabase = await createClient();

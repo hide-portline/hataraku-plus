@@ -11,13 +11,23 @@ export default async function JobsPage() {
     .eq("is_published", true)
     .order("published_at", { ascending: false });
 
+  const totalJobs = jobs?.length ?? 0;
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">求人を見る</h1>
-        <p className="text-[var(--color-text-secondary)]">
-          あなたの価値観に合ったポジションを見つけましょう。
-        </p>
+      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--color-brand)] mb-2">
+            求人一覧
+          </p>
+          <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">淡路島・周辺の求人を探す</h1>
+          <p className="text-[var(--color-text-secondary)] max-w-2xl">
+            地方でのキャリアも、価値観にフィットする企業も。あなたの働き方に合った求人を見つけてください。
+          </p>
+        </div>
+        <div className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)]">
+          公開求人 {totalJobs} 件
+        </div>
       </div>
 
       {!jobs || jobs.length === 0 ? (

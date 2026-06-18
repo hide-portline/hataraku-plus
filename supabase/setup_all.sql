@@ -318,7 +318,8 @@ CREATE POLICY "cda_select" ON company_diagnosis_answers FOR SELECT
   USING (company_id IN (SELECT company_id FROM company_members WHERE user_id = auth.uid()));
 CREATE POLICY "cda_insert" ON company_diagnosis_answers FOR INSERT
   WITH CHECK (company_id IN (SELECT company_id FROM company_members WHERE user_id = auth.uid()));
-CREATE POLICY "cdr_select" ON company_diagnosis_results FOR SELECT USING (true);
+CREATE POLICY "cdr_select" ON company_diagnosis_results FOR SELECT
+  USING (company_id IN (SELECT company_id FROM company_members WHERE user_id = auth.uid()));
 CREATE POLICY "cdr_insert" ON company_diagnosis_results FOR INSERT
   WITH CHECK (company_id IN (SELECT company_id FROM company_members WHERE user_id = auth.uid()));
 CREATE POLICY "cdr_update" ON company_diagnosis_results FOR UPDATE
