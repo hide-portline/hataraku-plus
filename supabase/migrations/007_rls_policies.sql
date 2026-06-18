@@ -78,6 +78,7 @@ CREATE POLICY "uda_select" ON user_diagnosis_answers FOR SELECT USING (auth.uid(
 CREATE POLICY "uda_insert" ON user_diagnosis_answers FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "udr_select" ON user_diagnosis_results FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "udr_insert" ON user_diagnosis_results FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "udr_update" ON user_diagnosis_results FOR UPDATE USING (auth.uid() = user_id);
 
 -- 企業診断: company_members のみ
 CREATE POLICY "cda_select" ON company_diagnosis_answers FOR SELECT
@@ -88,6 +89,8 @@ CREATE POLICY "cdr_select" ON company_diagnosis_results FOR SELECT
   USING (company_id IN (SELECT company_id FROM company_members WHERE user_id = auth.uid()));
 CREATE POLICY "cdr_insert" ON company_diagnosis_results FOR INSERT
   WITH CHECK (company_id IN (SELECT company_id FROM company_members WHERE user_id = auth.uid()));
+CREATE POLICY "cdr_update" ON company_diagnosis_results FOR UPDATE
+  USING (company_id IN (SELECT company_id FROM company_members WHERE user_id = auth.uid()));
 
 -- matching_scores: 本人のみ
 CREATE POLICY "ms_select" ON matching_scores FOR SELECT USING (auth.uid() = user_id);
