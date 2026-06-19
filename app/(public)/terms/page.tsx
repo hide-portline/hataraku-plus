@@ -2,9 +2,21 @@ export const metadata = { title: "利用規約 | Hataraku+淡路島" };
 
 export default function TermsPage() {
   return (
+    <div>
+      {/* ヘッダー */}
+      <div className="border-b border-[var(--color-border)]">
+        <div className="max-w-7xl mx-auto px-6 py-20">
+          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-6">
+            Terms of Service
+          </p>
+          <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold leading-none tracking-tight text-[var(--color-text-primary)]">
+            利用規約
+          </h1>
+          <p className="text-sm text-[var(--color-text-muted)] mt-6">最終更新日：2026年6月19日</p>
+        </div>
+      </div>
+
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">利用規約</h1>
-      <p className="text-sm text-[var(--color-text-muted)] mb-10">最終更新日：2026年6月19日</p>
 
       <div className="prose prose-sm max-w-none text-[var(--color-text-secondary)] space-y-8">
 
@@ -136,6 +148,7 @@ export default function TermsPage() {
         </section>
 
       </div>
+    </div>
     </div>
   );
 }
