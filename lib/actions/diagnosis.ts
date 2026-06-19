@@ -21,6 +21,13 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  // public.users にレコードがない場合（トリガー漏れ対策）作成する
+  await supabase.from("users").upsert({
+    id: user.id,
+    name: (user.user_metadata?.name as string | undefined) ?? user.email?.split("@")[0] ?? "ユーザー",
+    email: user.email!,
+  }, { onConflict: "id" });
+
   // 二重送信防止: 既に結果が存在する場合は処理しない
   const { data: existing } = await supabase
     .from("user_diagnosis_results")
