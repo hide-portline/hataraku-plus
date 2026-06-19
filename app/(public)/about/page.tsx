@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export const metadata = { title: "Hataraku+淡路島について | About" };
 
@@ -77,11 +78,25 @@ export default function AboutPage() {
             なぜ、淡路島なのか。
           </h2>
         </div>
-        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--color-border)] border border-[var(--color-border)]">
-          {reasons.map((r, i) => (
-            <div key={r.title} className="p-8 md:p-10">
-              <p className="text-xs font-mono text-[var(--color-accent)] mb-8">0{i + 1}</p>
-              <h3 className="text-lg font-bold text-[var(--color-text-primary)] mb-3">{r.title}</h3>
+        <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+          {reasons.map((r) => (
+            <div key={r.title}>
+              {/* 写真 */}
+              <div className="relative w-full aspect-[4/3] overflow-hidden mb-6 bg-[var(--color-surface)]">
+                <Image
+                  src={r.image}
+                  alt={r.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              {/* 丸矢印 + タイトル */}
+              <div className="flex items-center gap-3 mb-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--color-brand)] text-white shrink-0">
+                  <ArrowRight size={14} />
+                </span>
+                <h3 className="text-lg font-bold text-[var(--color-text-primary)]">{r.title}</h3>
+              </div>
               <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{r.description}</p>
             </div>
           ))}
@@ -173,14 +188,17 @@ const reasons = [
   {
     title: "多様な産業が共存する島",
     description: "農業・漁業・IT・観光・食品加工。都市では出会えない多様な仕事が、淡路島という小さな島に凝縮されています。",
+    image: "https://placehold.co/800x600/2D3A4B/ffffff?text=Awaji+Industry",
   },
   {
     title: "自然と都市、両方ある暮らし",
     description: "神戸・大阪へのアクセスを保ちながら、海と山に囲まれた環境で暮らせる。「田舎すぎない田舎」がここにあります。",
+    image: "https://placehold.co/800x600/3D6B5E/ffffff?text=Awaji+Nature",
   },
   {
     title: "移住者を受け入れる文化",
     description: "淡路島は移住者の受け入れに積極的。UIターン就職にも対応した企業が多く、新しい生活をスムーズにスタートできます。",
+    image: "https://placehold.co/800x600/E8792A/ffffff?text=Awaji+Community",
   },
 ];
 
