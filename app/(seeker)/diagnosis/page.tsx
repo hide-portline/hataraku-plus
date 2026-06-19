@@ -1,8 +1,20 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DiagnosisWizard from "@/components/diagnosis/DiagnosisWizard";
 
 export default async function DiagnosisPage() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login?redirect=/diagnosis");
+
+  // 診断済みなら結果ページへ（再診断はそちらから）
+  const { data: existing } = await supabase
+    .from("user_diagnosis_results")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (existing) redirect("/diagnosis/result");
+
   const { data: questions } = await supabase
     .from("diagnosis_questions")
     .select("*, diagnosis_options(*)")

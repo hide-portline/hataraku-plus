@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ResultCard from "@/components/diagnosis/ResultCard";
 import CompanyCard from "@/components/company/CompanyCard";
+import { retakeDiagnosis } from "@/lib/actions/diagnosis";
 import type { ValuesType, DiagnosisScores } from "@/types/database";
 
 export default async function DiagnosisResultPage() {
@@ -139,11 +140,14 @@ export default async function DiagnosisResultPage() {
               すべての企業を見る
             </button>
           </Link>
-          <Link href="/diagnosis" className="flex-1">
-            <button className="w-full py-3 rounded-full border border-[var(--color-border)] text-[var(--color-text-secondary)] font-semibold hover:bg-white transition-colors">
-              再診断する
+          <form action={retakeDiagnosis} className="flex-1">
+            <button
+              type="submit"
+              className="w-full py-3 rounded-full border border-[var(--color-border)] text-[var(--color-text-secondary)] font-semibold hover:bg-white transition-colors"
+            >
+              もう一度診断する
             </button>
-          </Link>
+          </form>
         </div>
       </div>
     </div>

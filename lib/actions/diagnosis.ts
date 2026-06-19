@@ -5,15 +5,35 @@ import { createClient } from "@/lib/supabase/server";
 import { calcScores, dominantType } from "@/lib/utils/diagnosis";
 import type { DiagnosisAnswer } from "@/lib/utils/diagnosis";
 
+export async function retakeDiagnosis() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  await supabase.from("user_diagnosis_answers").delete().eq("user_id", user.id);
+  await supabase.from("user_diagnosis_results").delete().eq("user_id", user.id);
+
+  redirect("/diagnosis");
+}
+
 export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  // 二重送信防止: 既に結果が存在する場合は処理しない
+  const { data: existing } = await supabase
+    .from("user_diagnosis_results")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (existing) redirect("/diagnosis/result");
+
   const scores = calcScores(answers);
   const type = dominantType(scores);
 
-  // 回答を保存
+  // 古い回答を削除してから保存（ページ戻りによる重複防止）
+  await supabase.from("user_diagnosis_answers").delete().eq("user_id", user.id);
   const { error: insertError } = await supabase.from("user_diagnosis_answers").insert(
     answers.map((a) => ({
       user_id: user.id,
