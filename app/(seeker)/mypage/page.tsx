@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { logoutAction } from "@/lib/actions/auth";
+import { logoutAction, deleteAccountAction } from "@/lib/actions/auth";
 import ValuesTypeBadge from "@/components/company/ValuesTypeBadge";
 import Button from "@/components/ui/Button";
 import type { ValuesType } from "@/types/database";
@@ -65,6 +65,27 @@ export default async function MyPage() {
           </nav>
           <form action={logoutAction} className="mt-4">
             <Button type="submit" variant="ghost" size="sm" className="w-full text-red-500 hover:bg-red-50">ログアウト</Button>
+          </form>
+        </div>
+      </div>
+
+      {/* アカウント削除 */}
+      <div className="mt-12 border-t border-[var(--color-border)] pt-8">
+        <h2 className="text-sm font-bold text-[var(--color-text-muted)] mb-4">アカウント設定</h2>
+        <div className="bg-white rounded-2xl border border-red-100 p-6">
+          <p className="text-sm font-semibold text-red-600 mb-1">アカウントを削除する</p>
+          <p className="text-xs text-[var(--color-text-muted)] mb-4">
+            削除すると、診断結果・応募履歴などすべてのデータが完全に消去されます。この操作は取り消せません。
+          </p>
+          <form
+            action={deleteAccountAction}
+            onSubmit={(e) => {
+              if (!confirm("本当にアカウントを削除しますか？この操作は取り消せません。")) e.preventDefault();
+            }}
+          >
+            <Button type="submit" variant="outline" size="sm" className="text-red-500 border-red-200 hover:bg-red-50">
+              アカウントを削除する
+            </Button>
           </form>
         </div>
       </div>

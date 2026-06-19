@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { sendCompanyRegistered } from "@/lib/email/send";
 
 export async function loginAction(
@@ -50,6 +51,19 @@ export async function registerAction(
 export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  redirect("/");
+}
+
+export async function deleteAccountAction() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "ログインが必要です" };
+
+  // auth.users から削除 → ON DELETE CASCADE で関連データも全削除
+  const admin = createAdminClient();
+  const { error } = await admin.auth.admin.deleteUser(user.id);
+  if (error) return { error: "アカウントの削除に失敗しました" };
+
   redirect("/");
 }
 
