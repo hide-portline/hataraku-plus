@@ -1,4 +1,4 @@
-export const metadata = { title: "利用規約 | HATARAKU+淡路島" };
+export const metadata = { title: "利用規約 | Hataraku+淡路島" };
 
 export default function TermsPage() {
   return (
@@ -9,7 +9,7 @@ export default function TermsPage() {
       <div className="prose prose-sm max-w-none text-[var(--color-text-secondary)] space-y-8">
 
         <p>
-          本利用規約（以下「本規約」）は、HATARAKU+淡路島（以下「当サービス」）が提供する
+          本利用規約（以下「本規約」）は、Hataraku+淡路島（以下「当サービス」）が提供する
           求人・採用マッチングプラットフォームの利用に関する条件を定めるものです。
           ご利用の前に必ずお読みください。
         </p>

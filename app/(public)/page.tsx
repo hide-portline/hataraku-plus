@@ -75,7 +75,7 @@ export default function TopPage() {
       {/* 特徴 */}
       <section className="max-w-7xl mx-auto px-6 py-24 md:py-32">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-16">
-          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)]">Why HATARAKU+</p>
+          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)]">Why Hataraku+</p>
           <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)] md:max-w-sm leading-tight">
             他の求人サービスとは<br />ここが違います
           </h2>

@@ -1,4 +1,4 @@
-export const metadata = { title: "プライバシーポリシー | HATARAKU+淡路島" };
+export const metadata = { title: "プライバシーポリシー | Hataraku+淡路島" };
 
 export default function PrivacyPage() {
   return (
@@ -11,11 +11,11 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-lg font-bold text-[var(--color-text-primary)] mb-3">1. 事業者情報</h2>
           <p>
-            HATARAKU+淡路島（以下「当サービス」）は、淡路島で働くことを希望する求職者と
+            Hataraku+淡路島（以下「当サービス」）は、淡路島で働くことを希望する求職者と
             淡路島内の企業とのマッチングを目的としたプラットフォームです。
           </p>
           <p className="mt-2 text-[var(--color-text-muted)]">
-            運営者：HATARAKU+淡路島<br />
+            運営者：Hataraku+淡路島<br />
             お問い合わせ：サイト内お問い合わせフォームよりご連絡ください
           </p>
         </section>

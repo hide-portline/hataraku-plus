@@ -17,7 +17,7 @@ function LoginForm() {
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
         <Link href="/" className="text-2xl font-bold text-[var(--color-brand)] block mb-6">
-          HATARAKU+
+          Hataraku+
         </Link>
         <h1 className="text-xl font-bold text-[var(--color-text-primary)]">ログイン</h1>
       </div>

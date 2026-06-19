@@ -1,4 +1,4 @@
-export const metadata = { title: "HATARAKU+淡路島について" };
+export const metadata = { title: "Hataraku+淡路島について" };
 
 export default function AboutPage() {
   return (
@@ -8,7 +8,7 @@ export default function AboutPage() {
           About
         </p>
         <h1 className="text-4xl font-bold text-[var(--color-text-primary)] mb-6">
-          HATARAKU+淡路島とは
+          Hataraku+淡路島とは
         </h1>
         <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed max-w-xl mx-auto">
           「どこで働くか」ではなく「どう生きるか」から仕事を選ぶ。
@@ -37,7 +37,7 @@ export default function AboutPage() {
           </h2>
           <p className="text-[var(--color-text-secondary)] leading-relaxed">
             給与や待遇だけで仕事を選ぶ時代は終わりつつあります。
-            HATARAKU+では、求職者と企業それぞれの「大切にしていること」を
+            Hataraku+では、求職者と企業それぞれの「大切にしていること」を
             診断で可視化し、価値観のマッチ度をスコアで表示します。
             「自然と共生しながら働きたい」「チームで社会課題に挑みたい」
             「自分のペースでクリエイティブな仕事がしたい」——
@@ -61,7 +61,7 @@ export default function AboutPage() {
 
       <div className="mt-16 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] p-8 text-center">
         <p className="text-sm text-[var(--color-text-muted)] mb-1">運営</p>
-        <p className="font-bold text-[var(--color-text-primary)]">HATARAKU+淡路島 運営事務局</p>
+        <p className="font-bold text-[var(--color-text-primary)]">Hataraku+淡路島 運営事務局</p>
         <p className="text-sm text-[var(--color-text-muted)] mt-3">
           ご意見・お問い合わせは
           <a

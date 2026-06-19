@@ -32,7 +32,7 @@ export default async function CompanyLayout({ children }: { children: React.Reac
       {/* サイドバー */}
       <aside className="w-56 bg-[var(--color-brand)] text-white shrink-0 flex flex-col">
         <div className="px-5 py-6 border-b border-white/10">
-          <Link href="/" className="text-sm font-bold text-white/80 hover:text-white">HATARAKU+</Link>
+          <Link href="/" className="text-sm font-bold text-white/80 hover:text-white">Hataraku+</Link>
           <p className="text-xs text-white/50 mt-1 truncate">{company?.company_name ?? "企業名未設定"}</p>
           {company?.status === "pending" && (
             <span className="inline-block mt-2 text-xs bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full">審査中</span>

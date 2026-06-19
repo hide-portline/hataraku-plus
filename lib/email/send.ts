@@ -24,7 +24,7 @@ export async function sendApplicationReceived(opts: {
   const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.companyEmail,
-    subject: `【HATARAKU+】新しい応募が届きました：${opts.seekerName}さん`,
+    subject: `【Hataraku+】新しい応募が届きました：${opts.seekerName}さん`,
     html: `
       <h2>新しい応募が届きました</h2>
       <p>${esc(opts.companyName)} 採用ご担当者様</p>
@@ -46,7 +46,7 @@ export async function sendApplicationConfirm(opts: {
   const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.seekerEmail,
-    subject: `【HATARAKU+】「${opts.jobTitle}」への応募が完了しました`,
+    subject: `【Hataraku+】「${opts.jobTitle}」への応募が完了しました`,
     html: `
       <h2>応募完了のお知らせ</h2>
       <p>${esc(opts.seekerName)} 様</p>
@@ -65,7 +65,7 @@ export async function sendCompanyRegistered(opts: {
   const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.companyEmail,
-    subject: "【HATARAKU+】企業登録を受け付けました",
+    subject: "【Hataraku+】企業登録を受け付けました",
     html: `
       <h2>企業登録受付のご案内</h2>
       <p>${esc(opts.companyName)} ご担当者様</p>
@@ -84,7 +84,7 @@ export async function sendPasswordReset(opts: {
   const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.email,
-    subject: "【HATARAKU+】パスワードリセットのご案内",
+    subject: "【Hataraku+】パスワードリセットのご案内",
     html: `
       <h2>パスワードリセット</h2>
       <p>以下のリンクからパスワードを再設定してください。</p>

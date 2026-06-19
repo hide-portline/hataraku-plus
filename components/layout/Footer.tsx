@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
           <div className="col-span-2 md:col-span-1">
-            <p className="text-lg font-bold mb-2">HATARAKU+淡路島</p>
+            <p className="text-lg font-bold mb-2">Hataraku+淡路島</p>
             <p className="text-sm text-white/70 leading-relaxed">
               条件だけでなく価値観で企業と出会う、淡路島特化の採用プラットフォーム。
             </p>
@@ -41,7 +41,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/20 pt-6 text-center text-xs text-white/50">
-          © {new Date().getFullYear()} HATARAKU+淡路島 All Rights Reserved.
+          © {new Date().getFullYear()} Hataraku+淡路島 All Rights Reserved.
         </div>
       </div>
     </footer>

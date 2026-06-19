@@ -13,7 +13,7 @@ export default function RegisterPage() {
     return (
       <div className="w-full max-w-sm text-center">
         <Link href="/" className="text-2xl font-bold text-[var(--color-brand)] block mb-6">
-          HATARAKU+
+          Hataraku+
         </Link>
         <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm p-8">
           <p className="text-4xl mb-4">📧</p>
@@ -33,7 +33,7 @@ export default function RegisterPage() {
     <div className="w-full max-w-sm">
       <div className="text-center mb-8">
         <Link href="/" className="text-2xl font-bold text-[var(--color-brand)] block mb-6">
-          HATARAKU+
+          Hataraku+
         </Link>
         <h1 className="text-xl font-bold text-[var(--color-text-primary)]">無料会員登録</h1>
         <p className="text-sm text-[var(--color-text-secondary)] mt-1">価値観診断で理想の企業を見つけよう</p>

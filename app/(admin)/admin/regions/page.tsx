@@ -82,7 +82,7 @@ export default async function AdminRegionsPage() {
       <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm p-6">
         <h2 className="font-bold text-[var(--color-text-primary)] mb-4">新しい地域を追加</h2>
         <form action={addRegion} className="flex flex-col gap-4">
-          <Input id="name" name="name" label="地域名 *" placeholder="例: HATARAKU+徳島" required />
+          <Input id="name" name="name" label="地域名 *" placeholder="例: Hataraku+徳島" required />
           <Input id="slug" name="slug" label="スラッグ *" placeholder="例: tokushima" required />
           <Input id="description" name="description" label="説明" placeholder="例: 徳島県全域を対象としたエリア" />
           <button
