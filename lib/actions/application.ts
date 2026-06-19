@@ -53,6 +53,34 @@ export async function applyToJob(jobId: string, message?: string) {
 
 export async function updateApplicationStatus(applicationId: string, status: string) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "認証が必要です" };
+
+  const VALID_STATUSES = ["applied", "screening", "interview", "offer", "hired", "rejected"];
+  if (!VALID_STATUSES.includes(status)) return { success: false, error: "無効なステータスです" };
+
+  // ログインユーザーが所属する企業の求人への応募のみ更新可能
+  const { data: membership } = await supabase
+    .from("company_members")
+    .select("company_id")
+    .eq("user_id", user.id)
+    .single();
+  if (!membership) return { success: false, error: "権限がありません" };
+
+  const { data: application } = await supabase
+    .from("applications")
+    .select("job_id, jobs(company_id)")
+    .eq("id", applicationId)
+    .single();
+
+  const jobCompanyId = application?.jobs
+    ? (Array.isArray(application.jobs) ? application.jobs[0]?.company_id : (application.jobs as { company_id: string }).company_id)
+    : null;
+
+  if (!jobCompanyId || jobCompanyId !== membership.company_id) {
+    return { success: false, error: "権限がありません" };
+  }
+
   const { error } = await supabase
     .from("applications")
     .update({ status: status as import("@/types/database").ApplicationStatus, updated_at: new Date().toISOString() })

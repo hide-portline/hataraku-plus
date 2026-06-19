@@ -18,9 +18,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!user) redirect("/login");
 
   const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((email) => email.trim().toLowerCase()).filter(Boolean);
-  if (adminEmails && adminEmails.length > 0) {
-    const email = user.email?.toLowerCase();
-    if (!email || !adminEmails.includes(email)) redirect("/login");
+  const email = user.email?.toLowerCase();
+  if (!adminEmails || adminEmails.length === 0 || !email || !adminEmails.includes(email)) {
+    redirect("/login");
   }
 
   return (

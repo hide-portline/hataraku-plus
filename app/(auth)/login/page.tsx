@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { loginAction } from "@/lib/actions/auth";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
-export default function LoginPage() {
-  const [state, action, pending] = useActionState(loginAction, undefined);
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") ?? "/mypage";
+  const [state, action, pending] = useActionState(loginAction.bind(null, redirect), undefined);
 
   return (
     <div className="w-full max-w-sm">
@@ -38,5 +42,13 @@ export default function LoginPage() {
         <Link href="/company/login" className="text-[var(--color-brand)] font-semibold hover:underline">こちら</Link>
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

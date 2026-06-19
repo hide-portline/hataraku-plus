@@ -5,6 +5,15 @@ import { createClient } from "@/lib/supabase/server";
 
 type EmailResult = { success: boolean; error?: string };
 
+function esc(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export async function sendApplicationReceived(opts: {
   companyEmail: string;
   companyName: string;
@@ -18,8 +27,8 @@ export async function sendApplicationReceived(opts: {
     subject: `【HATARAKU+】新しい応募が届きました：${opts.seekerName}さん`,
     html: `
       <h2>新しい応募が届きました</h2>
-      <p>${opts.companyName} 採用ご担当者様</p>
-      <p><strong>${opts.seekerName}</strong>さんが「${opts.jobTitle}」に応募しました。</p>
+      <p>${esc(opts.companyName)} 採用ご担当者様</p>
+      <p><strong>${esc(opts.seekerName)}</strong>さんが「${esc(opts.jobTitle)}」に応募しました。</p>
       <p>ダッシュボードから応募者の詳細をご確認ください。</p>
       <p>直接応募者へご連絡をお願いいたします。</p>
     `,
@@ -40,8 +49,8 @@ export async function sendApplicationConfirm(opts: {
     subject: `【HATARAKU+】「${opts.jobTitle}」への応募が完了しました`,
     html: `
       <h2>応募完了のお知らせ</h2>
-      <p>${opts.seekerName} 様</p>
-      <p>「<strong>${opts.companyName}</strong>」の「${opts.jobTitle}」への応募が完了しました。</p>
+      <p>${esc(opts.seekerName)} 様</p>
+      <p>「<strong>${esc(opts.companyName)}</strong>」の「${esc(opts.jobTitle)}」への応募が完了しました。</p>
       <p>企業からの連絡をお待ちください。</p>
     `,
   });
@@ -59,7 +68,7 @@ export async function sendCompanyRegistered(opts: {
     subject: "【HATARAKU+】企業登録を受け付けました",
     html: `
       <h2>企業登録受付のご案内</h2>
-      <p>${opts.companyName} ご担当者様</p>
+      <p>${esc(opts.companyName)} ご担当者様</p>
       <p>企業登録のお申し込みを受け付けました。</p>
       <p>担当者が内容を確認し、通常1〜3営業日以内にご連絡いたします。</p>
     `,
@@ -79,7 +88,7 @@ export async function sendPasswordReset(opts: {
     html: `
       <h2>パスワードリセット</h2>
       <p>以下のリンクからパスワードを再設定してください。</p>
-      <p><a href="${opts.resetUrl}">${opts.resetUrl}</a></p>
+      <p><a href="${esc(opts.resetUrl)}">${esc(opts.resetUrl)}</a></p>
       <p>このリンクの有効期限は1時間です。</p>
     `,
   });
