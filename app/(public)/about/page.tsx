@@ -188,17 +188,17 @@ const reasons = [
   {
     title: "多様な産業が共存する島",
     description: "農業・漁業・IT・観光・食品加工。都市では出会えない多様な仕事が、淡路島という小さな島に凝縮されています。",
-    image: "https://placehold.co/800x600/2D3A4B/ffffff?text=Awaji+Industry",
+    image: "https://picsum.photos/seed/awaji-farm/800/600",
   },
   {
     title: "自然と都市、両方ある暮らし",
     description: "神戸・大阪へのアクセスを保ちながら、海と山に囲まれた環境で暮らせる。「田舎すぎない田舎」がここにあります。",
-    image: "https://placehold.co/800x600/3D6B5E/ffffff?text=Awaji+Nature",
+    image: "https://picsum.photos/seed/awaji-sea/800/600",
   },
   {
     title: "移住者を受け入れる文化",
     description: "淡路島は移住者の受け入れに積極的。UIターン就職にも対応した企業が多く、新しい生活をスムーズにスタートできます。",
-    image: "https://placehold.co/800x600/E8792A/ffffff?text=Awaji+Community",
+    image: "https://picsum.photos/seed/awaji-town/800/600",
   },
 ];
 
