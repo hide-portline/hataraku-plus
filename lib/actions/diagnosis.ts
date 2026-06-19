@@ -44,15 +44,16 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
   );
   if (insertError) throw new Error(insertError.message);
 
-  // 結果を保存（既存は上書き）
-  const { error: upsertError } = await supabase.from("user_diagnosis_results").upsert({
+  // 結果を保存（既存があれば削除してから挿入）
+  await supabase.from("user_diagnosis_results").delete().eq("user_id", user.id);
+  const { error: upsertError } = await supabase.from("user_diagnosis_results").insert({
     user_id: user.id,
     values_type: type,
     score_challenger: scores.challenger,
     score_stable: scores.stable,
     score_team: scores.team,
     score_specialist: scores.specialist,
-  }, { onConflict: "user_id" });
+  });
   if (upsertError) throw new Error(upsertError.message);
 
   // 企業診断済みの企業に対してマッチングスコアを計算・保存
