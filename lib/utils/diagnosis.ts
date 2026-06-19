@@ -49,8 +49,8 @@ export const VALUES_TYPE_COLORS: Record<ValuesType, string> = {
 };
 
 export const VALUES_TYPE_ICONS: Record<ValuesType, string> = {
-  challenger: "Challenger",
-  stable:     "Stable",
-  team:       "Team",
-  specialist: "Specialist",
+  challenger: "🔥",
+  stable:     "🌿",
+  team:       "🤝",
+  specialist: "🔬",
 };
