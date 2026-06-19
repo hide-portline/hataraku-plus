@@ -2,23 +2,31 @@ import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import CompanyCard from "@/components/company/CompanyCard";
 import CompanyFilters from "@/components/company/CompanyFilters";
+import Pagination from "@/components/ui/Pagination";
 
-type SearchParams = Promise<{ values_type?: string }>;
+const PAGE_SIZE = 12;
+
+type SearchParams = Promise<{ values_type?: string; page?: string }>;
 
 export default async function CompaniesPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const supabase = await createClient();
 
+  const currentPage = Math.max(1, parseInt(params.page ?? "1", 10));
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
   let query = supabase
     .from("companies")
-    .select("*, regions(name)")
+    .select("*, regions(name)", { count: "exact" })
     .eq("status", "approved")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(offset, offset + PAGE_SIZE - 1);
 
   if (params.values_type) query = query.eq("values_type", params.values_type as "challenger" | "stable" | "team" | "specialist");
 
-  const { data: companies } = await query;
-  const total = companies?.length ?? 0;
+  const { data: companies, count } = await query;
+  const totalCount = count ?? 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const isFiltered = !!params.values_type;
 
   return (
@@ -33,7 +41,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
           </h1>
         </div>
         <p className="text-sm text-[var(--color-text-muted)] shrink-0">
-          {isFiltered ? `${total} 社ヒット` : `${total} 社掲載中`}
+          {isFiltered ? `${totalCount} 社ヒット` : `${totalCount} 社掲載中`}
         </p>
       </div>
 
@@ -49,11 +57,16 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
           </p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
-          {companies.map((c) => (
-            <CompanyCard key={c.id} company={c} />
-          ))}
-        </div>
+        <>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+            {companies.map((c) => (
+              <CompanyCard key={c.id} company={c} />
+            ))}
+          </div>
+          <Suspense>
+            <Pagination currentPage={currentPage} totalPages={totalPages} />
+          </Suspense>
+        </>
       )}
     </div>
   );

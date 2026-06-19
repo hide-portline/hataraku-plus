@@ -2,29 +2,38 @@ import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/job/JobCard";
 import JobFilters from "@/components/job/JobFilters";
+import Pagination from "@/components/ui/Pagination";
+
+const PAGE_SIZE = 12;
 
 type SearchParams = Promise<{
   employment_type?: string;
   work_style?: string;
   values_type?: string;
+  page?: string;
 }>;
 
 export default async function JobsPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const supabase = await createClient();
 
+  const currentPage = Math.max(1, parseInt(params.page ?? "1", 10));
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
   let query = supabase
     .from("jobs")
-    .select("*, companies(company_name, logo_url)")
+    .select("*, companies(company_name, logo_url)", { count: "exact" })
     .eq("is_published", true)
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .range(offset, offset + PAGE_SIZE - 1);
 
   if (params.employment_type) query = query.eq("employment_type", params.employment_type as "fulltime" | "parttime" | "contract");
   if (params.work_style) query = query.eq("work_style", params.work_style as "remote" | "onsite" | "hybrid");
   if (params.values_type) query = query.eq("values_type", params.values_type as "challenger" | "stable" | "team" | "specialist");
 
-  const { data: jobs } = await query;
-  const totalJobs = jobs?.length ?? 0;
+  const { data: jobs, count } = await query;
+  const totalCount = count ?? 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const isFiltered = !!(params.employment_type || params.work_style || params.values_type);
 
   return (
@@ -40,7 +49,7 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
           </p>
         </div>
         <div className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] shrink-0">
-          {isFiltered ? `${totalJobs} 件ヒット` : `公開求人 ${totalJobs} 件`}
+          {isFiltered ? `${totalCount} 件ヒット` : `公開求人 ${totalCount} 件`}
         </div>
       </div>
 
@@ -56,11 +65,16 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
           </p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} />
-          ))}
-        </div>
+        <>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {jobs.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </div>
+          <Suspense>
+            <Pagination currentPage={currentPage} totalPages={totalPages} />
+          </Suspense>
+        </>
       )}
     </div>
   );
