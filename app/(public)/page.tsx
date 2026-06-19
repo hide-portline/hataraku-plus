@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export default function TopPage() {
   return (
@@ -80,11 +81,18 @@ export default function TopPage() {
             他の求人サービスとは<br />ここが違います
           </h2>
         </div>
-        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--color-border)] border border-[var(--color-border)]">
-          {features.map((f, i) => (
-            <div key={f.title} className="p-8 md:p-10">
-              <p className="text-xs font-mono text-[var(--color-accent)] mb-8">0{i + 1}</p>
-              <h3 className="text-lg font-bold text-[var(--color-text-primary)] mb-3">{f.title}</h3>
+        <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+          {features.map((f) => (
+            <div key={f.title}>
+              <div className="relative w-full aspect-[4/3] overflow-hidden mb-6">
+                <Image src={f.image} alt={f.title} fill className="object-cover" />
+              </div>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--color-brand)] text-white shrink-0">
+                  <ArrowRight size={14} />
+                </span>
+                <h3 className="text-lg font-bold text-[var(--color-text-primary)]">{f.title}</h3>
+              </div>
               <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{f.description}</p>
             </div>
           ))}
@@ -123,13 +131,16 @@ const features = [
   {
     title: "価値観でマッチング",
     description: "給与・条件だけでなく、企業の文化・ビジョン・働く環境との相性を可視化します。",
+    image: "https://picsum.photos/seed/hataraku-match/800/600",
   },
   {
     title: "淡路島特化",
     description: "地域に根ざした企業の魅力を深くご紹介。移住・UIターン就職にも対応。",
+    image: "https://picsum.photos/seed/hataraku-awaji/800/600",
   },
   {
     title: "働く人の声",
     description: "企業インタビューや社員ストーリーを通じて、リアルな職場の雰囲気を伝えます。",
+    image: "https://picsum.photos/seed/hataraku-people/800/600",
   },
 ];
