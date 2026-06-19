@@ -110,6 +110,34 @@ export default function TopPage() {
         </div>
       </section>
 
+      {/* 淡路島という選択 */}
+      <section className="border-t border-[var(--color-border)] bg-[var(--color-surface)]">
+        <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-16">
+            <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)]">Awaji Island</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)] md:max-w-sm leading-tight">
+              なぜ、淡路島で<br />働くのか。
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-px bg-[var(--color-border)]">
+            {awajiFacts.map((fact) => (
+              <div key={fact.label} className="bg-[var(--color-surface)] p-8 md:p-10">
+                <p className="text-[clamp(2.5rem,5vw,4rem)] font-extrabold leading-none text-[var(--color-text-primary)] mb-4">
+                  {fact.value}
+                </p>
+                <p className="text-sm font-bold text-[var(--color-text-primary)] mb-2">{fact.label}</p>
+                <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{fact.description}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-16 border-t border-[var(--color-border)] pt-12">
+            <blockquote className="text-[clamp(1.25rem,3vw,2rem)] font-bold leading-relaxed text-[var(--color-text-primary)] max-w-3xl">
+              「淡路島は、<span className="text-[var(--color-accent)]">都市の便利さ</span>と<span className="text-[var(--color-accent)]">自然の豊かさ</span>が共存する、日本でも稀な島です。農業・観光・IT・食品加工など多様な産業が集まり、小さな島の中に大きなキャリアの選択肢があります。」
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="bg-[var(--color-text-primary)]">
         <div className="max-w-7xl mx-auto px-6 py-24 md:py-32 flex flex-col md:flex-row md:items-end justify-between gap-12">
@@ -136,6 +164,24 @@ const stats = [
   { value: "無料", label: "診断・登録" },
   { value: "4種", label: "価値観タイプ" },
   { value: "3分", label: "診断所要時間" },
+];
+
+const awajiFacts = [
+  {
+    value: "45分",
+    label: "神戸から淡路島へ",
+    description: "明石海峡大橋を渡れば神戸まで約45分。大阪まで約1時間。都市へのアクセスを保ちながら、島の自然の中で暮らせます。",
+  },
+  {
+    value: "4業種",
+    label: "農業・観光・IT・食品",
+    description: "農業・漁業・観光・食品加工・IT・製造業まで、多様な産業が淡路島という小さな島に共存しています。",
+  },
+  {
+    value: "増加中",
+    label: "移住者・UIターン就職",
+    description: "UIターン就職を歓迎する企業が多く、移住者支援制度も充実。新しいキャリアと新しい暮らしを同時に始められます。",
+  },
 ];
 
 const features = [

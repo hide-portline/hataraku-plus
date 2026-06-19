@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const supabase = await createClient();
   const { data: article } = await supabase
     .from("articles")
-    .select("title, excerpt, thumbnail_url, companies(company_name)")
+    .select("title, content, thumbnail_url, companies(company_name)")
     .eq("id", id)
     .eq("is_published", true)
     .single();
@@ -21,10 +21,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const companyName = Array.isArray(article.companies) ? article.companies[0]?.company_name : (article.companies as { company_name: string } | null)?.company_name;
   return {
     title: article.title,
-    description: article.excerpt?.slice(0, 120) ?? `${companyName ?? ""}のストーリー。`,
+    description: (article.content as string)?.slice(0, 120) ?? `${companyName ?? ""}のストーリー。`,
     openGraph: {
       title: `${article.title} | Hataraku+淡路島`,
-      description: article.excerpt?.slice(0, 120) ?? `${companyName ?? ""}のストーリー。`,
+      description: (article.content as string)?.slice(0, 120) ?? `${companyName ?? ""}のストーリー。`,
       url: `/articles/${id}`,
       ...(article.thumbnail_url ? { images: [{ url: article.thumbnail_url }] } : {}),
     },
