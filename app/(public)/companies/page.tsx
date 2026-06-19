@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import CompanyCard from "@/components/company/CompanyCard";
 import CompanyFilters from "@/components/company/CompanyFilters";
 import Pagination from "@/components/ui/Pagination";
+
+export const metadata: Metadata = {
+  title: "企業一覧",
+  description: "淡路島で働く企業の一覧。農業・観光・IT・食品加工など多様な業種の企業が価値観とともに掲載されています。移住・UIターン就職にも対応。",
+  openGraph: {
+    title: "企業一覧 | Hataraku+淡路島",
+    description: "淡路島で働く企業を価値観で探す。",
+    url: "/companies",
+  },
+};
 
 const PAGE_SIZE = 12;
 

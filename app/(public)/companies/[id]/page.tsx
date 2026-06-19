@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +9,28 @@ import { VALUES_TYPE_DESCRIPTIONS } from "@/lib/utils/diagnosis";
 import type { ValuesType } from "@/types/database";
 
 export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: company } = await supabase
+    .from("companies")
+    .select("company_name, description, industry")
+    .eq("id", id)
+    .eq("status", "approved")
+    .single();
+
+  if (!company) return { title: "企業詳細" };
+  return {
+    title: company.company_name,
+    description: company.description?.slice(0, 120) ?? `${company.company_name}の企業情報・求人情報。`,
+    openGraph: {
+      title: `${company.company_name} | Hataraku+淡路島`,
+      description: company.description?.slice(0, 120) ?? `${company.company_name}の企業情報。`,
+      url: `/companies/${id}`,
+    },
+  };
+}
 
 export default async function CompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

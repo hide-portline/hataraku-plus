@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,6 +6,30 @@ import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils/format";
 
 export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: article } = await supabase
+    .from("articles")
+    .select("title, excerpt, thumbnail_url, companies(company_name)")
+    .eq("id", id)
+    .eq("is_published", true)
+    .single();
+
+  if (!article) return { title: "記事" };
+  const companyName = Array.isArray(article.companies) ? article.companies[0]?.company_name : (article.companies as { company_name: string } | null)?.company_name;
+  return {
+    title: article.title,
+    description: article.excerpt?.slice(0, 120) ?? `${companyName ?? ""}のストーリー。`,
+    openGraph: {
+      title: `${article.title} | Hataraku+淡路島`,
+      description: article.excerpt?.slice(0, 120) ?? `${companyName ?? ""}のストーリー。`,
+      url: `/articles/${id}`,
+      ...(article.thumbnail_url ? { images: [{ url: article.thumbnail_url }] } : {}),
+    },
+  };
+}
 
 export default async function ArticleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

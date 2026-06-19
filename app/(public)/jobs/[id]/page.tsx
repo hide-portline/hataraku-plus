@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -7,6 +8,29 @@ import { formatSalary, formatEmploymentType, formatWorkStyle } from "@/lib/utils
 import type { ValuesType } from "@/types/database";
 
 export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: job } = await supabase
+    .from("jobs")
+    .select("title, description, companies(company_name)")
+    .eq("id", id)
+    .eq("is_published", true)
+    .single();
+
+  if (!job) return { title: "求人詳細" };
+  const companyName = Array.isArray(job.companies) ? job.companies[0]?.company_name : (job.companies as { company_name: string } | null)?.company_name;
+  return {
+    title: job.title,
+    description: job.description?.slice(0, 120) ?? `${companyName ?? ""}の求人情報。淡路島での働き方をご確認ください。`,
+    openGraph: {
+      title: `${job.title} | Hataraku+淡路島`,
+      description: job.description?.slice(0, 120) ?? `${companyName ?? ""}の求人情報。`,
+      url: `/jobs/${id}`,
+    },
+  };
+}
 
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

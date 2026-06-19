@@ -1,4 +1,13 @@
-export const metadata = { title: "利用規約 | Hataraku+淡路島" };
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "利用規約",
+  description: "Hataraku+淡路島の利用規約。サービスのご利用前に必ずお読みください。",
+  openGraph: {
+    title: "利用規約 | Hataraku+淡路島",
+    url: "/terms",
+  },
+};
 
 export default function TermsPage() {
   return (

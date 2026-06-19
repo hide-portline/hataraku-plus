@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Hataraku+淡路島 | 価値観で出会う採用プラットフォーム",
+  description: "給与・条件だけでなく、価値観で企業と出会う。淡路島の企業文化・ビジョン・働く人の魅力を可視化した地域特化型採用プラットフォーム。移住・UIターン就職にも対応。",
+  openGraph: {
+    title: "Hataraku+淡路島 | 価値観で出会う採用プラットフォーム",
+    description: "給与・条件だけでなく、価値観で企業と出会う。淡路島特化の採用プラットフォーム。",
+    url: "/",
+  },
+};
 
 export default function TopPage() {
   return (
@@ -122,7 +133,7 @@ export default function TopPage() {
 }
 
 const stats = [
-  { value: "50+", label: "掲載企業" },
+  { value: "無料", label: "診断・登録" },
   { value: "4種", label: "価値観タイプ" },
   { value: "3分", label: "診断所要時間" },
 ];

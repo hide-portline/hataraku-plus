@@ -1,4 +1,13 @@
-export const metadata = { title: "プライバシーポリシー | Hataraku+淡路島" };
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "プライバシーポリシー",
+  description: "Hataraku+淡路島のプライバシーポリシー。個人情報の取り扱いについてご確認ください。",
+  openGraph: {
+    title: "プライバシーポリシー | Hataraku+淡路島",
+    url: "/privacy",
+  },
+};
 
 export default function PrivacyPage() {
   return (

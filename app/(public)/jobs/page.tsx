@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/job/JobCard";
 import JobFilters from "@/components/job/JobFilters";
 import Pagination from "@/components/ui/Pagination";
+
+export const metadata: Metadata = {
+  title: "求人一覧",
+  description: "淡路島の求人情報一覧。正社員・契約社員・パートなど多様な雇用形態で、あなたの価値観に合った仕事を探せます。移住・UIターン歓迎の求人も掲載。",
+  openGraph: {
+    title: "求人一覧 | Hataraku+淡路島",
+    description: "淡路島の求人を価値観で探す。",
+    url: "/jobs",
+  },
+};
 
 const PAGE_SIZE = 12;
 

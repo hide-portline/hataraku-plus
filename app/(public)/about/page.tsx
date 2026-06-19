@@ -2,7 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-export const metadata = { title: "Hataraku+淡路島について | About" };
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Hataraku+淡路島について | About",
+  description: "Hataraku+は「どこで働くか」より「どう生きるか」から始める、淡路島特化の価値観マッチング採用プラットフォームです。なぜ淡路島なのか、私たちのミッションをご紹介します。",
+  openGraph: {
+    title: "Hataraku+淡路島について | About",
+    description: "価値観で仕事を選ぶ文化をつくる、淡路島特化の採用プラットフォーム。",
+    url: "/about",
+  },
+};
 
 export default function AboutPage() {
   return (

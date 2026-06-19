@@ -1,7 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils/format";
+
+export const metadata: Metadata = {
+  title: "記事・ストーリー",
+  description: "淡路島で働く人たちのストーリー。企業インタビューや移住体験談を通じて、リアルな職場の雰囲気をお届けします。",
+  openGraph: {
+    title: "記事・ストーリー | Hataraku+淡路島",
+    description: "淡路島で働く人たちのリアルなストーリー。",
+    url: "/articles",
+  },
+};
 
 export const revalidate = 3600;
 
