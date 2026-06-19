@@ -34,9 +34,10 @@ export async function middleware(request: NextRequest) {
 
   // POST リクエストにのみ rate limit を適用
   if (request.method === "POST") {
+    // Vercel では request.ip が信頼できる値（プロキシ偽装不可）
     const ip =
+      (request as unknown as { ip?: string }).ip ??
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      request.headers.get("x-real-ip") ??
       "unknown";
 
     if (!checkRateLimit(ip, pathname)) {

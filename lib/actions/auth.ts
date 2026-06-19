@@ -17,7 +17,8 @@ export async function loginAction(
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: "メールアドレスまたはパスワードが正しくありません" };
 
-  const safeRedirect = redirectTo.startsWith("/") ? redirectTo : "/mypage";
+  // //evil.com のようなプロトコル相対URLによるオープンリダイレクトを防止
+  const safeRedirect = /^\/[^/]/.test(redirectTo) ? redirectTo : "/mypage";
   redirect(safeRedirect);
 }
 
