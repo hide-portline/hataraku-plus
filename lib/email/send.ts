@@ -1,6 +1,6 @@
 "use server";
 
-import { resend, FROM } from "./resend";
+import { getResend, FROM } from "./resend";
 import { createClient } from "@/lib/supabase/server";
 
 type EmailResult = { success: boolean; error?: string };
@@ -21,7 +21,7 @@ export async function sendApplicationReceived(opts: {
   jobTitle: string;
   applicationId: string;
 }): Promise<EmailResult> {
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.companyEmail,
     subject: `【HATARAKU+】新しい応募が届きました：${opts.seekerName}さん`,
@@ -43,7 +43,7 @@ export async function sendApplicationConfirm(opts: {
   jobTitle: string;
   companyName: string;
 }): Promise<EmailResult> {
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.seekerEmail,
     subject: `【HATARAKU+】「${opts.jobTitle}」への応募が完了しました`,
@@ -62,7 +62,7 @@ export async function sendCompanyRegistered(opts: {
   companyEmail: string;
   companyName: string;
 }): Promise<EmailResult> {
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.companyEmail,
     subject: "【HATARAKU+】企業登録を受け付けました",
@@ -81,7 +81,7 @@ export async function sendPasswordReset(opts: {
   email: string;
   resetUrl: string;
 }): Promise<EmailResult> {
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: FROM,
     to: opts.email,
     subject: "【HATARAKU+】パスワードリセットのご案内",
