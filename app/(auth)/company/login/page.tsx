@@ -30,6 +30,12 @@ export default function CompanyLoginPage() {
       </form>
 
       <p className="text-center text-sm text-[var(--color-text-secondary)] mt-6">
+        アカウントをお持ちでない方は{" "}
+        <Link href="/company/register" className="text-[var(--color-brand)] font-semibold hover:underline">
+          新規登録
+        </Link>
+      </p>
+      <p className="text-center text-sm text-[var(--color-text-secondary)] mt-2">
         <Link href="/" className="hover:underline">
           ← サイトトップへ
         </Link>
