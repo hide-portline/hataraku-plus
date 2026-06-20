@@ -65,17 +65,19 @@ export default function CompanyRegisterPage() {
             placeholder="株式会社○○"
           />
           <Input
-            id="industry" name="industry" label="業種"
+            id="industry" name="industry" label="業種" required
             placeholder="農業・食品、IT、観光 など"
           />
           <Input
-            id="location" name="location" label="所在地"
+            id="location" name="location" label="所在地" required
             placeholder="兵庫県淡路市○○"
           />
-          <Input
-            id="website_url" name="website_url" label="ウェブサイトURL" type="url"
-            placeholder="https://example.com"
-          />
+          <div>
+            <Input
+              id="website_url" name="website_url" label="ウェブサイトURL（任意）" type="url"
+              placeholder="https://example.com"
+            />
+          </div>
         </fieldset>
 
         <hr className="border-[var(--color-border)]" />

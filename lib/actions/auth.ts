@@ -80,26 +80,32 @@ export async function companyRegisterAction(
   const email       = (formData.get("email")        as string)?.trim();
   const password    =  formData.get("password")     as string;
 
-  if (!companyName || !name || !email || !password) {
-    return { error: "必須項目をすべて入力してください" };
+  if (!companyName || !industry || !location || !name || !email || !password) {
+    return { error: "必須項目をすべて入力してください（ウェブサイトURLのみ任意）" };
   }
   if (password.length < 8) {
     return { error: "パスワードは8文字以上で設定してください" };
   }
 
   const supabase = await createClient();
+  const admin = createAdminClient();
 
-  // 1. auth ユーザーを作成（trigger が public.users を自動生成）
+  // 1. auth ユーザーを作成
   const { data, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { name } },
   });
-  if (signUpError) return { error: "登録に失敗しました。すでに登録済みのメールアドレスかもしれません" };
-  if (!data.user) return { error: "登録に失敗しました" };
+  if (signUpError) {
+    if (signUpError.message.includes("already registered") || signUpError.message.includes("already been registered")) {
+      return { error: "このメールアドレスはすでに登録されています" };
+    }
+    return { error: `アカウント作成に失敗しました: ${signUpError.message}` };
+  }
+  if (!data.user) return { error: "アカウント作成に失敗しました" };
 
-  // 2. 企業レコードを作成（status: pending → 管理者審査待ち）
-  const { data: company, error: companyError } = await supabase
+  // 2. 企業レコードを作成（admin client でRLSをバイパス）
+  const { data: company, error: companyError } = await admin
     .from("companies")
     .insert({
       company_name: companyName,
@@ -111,13 +117,15 @@ export async function companyRegisterAction(
     })
     .select("id")
     .single();
-  if (companyError || !company) return { error: "企業情報の登録に失敗しました" };
+  if (companyError || !company) {
+    return { error: `企業情報の登録に失敗しました: ${companyError?.message ?? "不明なエラー"}` };
+  }
 
-  // 3. company_members に owner として登録
-  const { error: memberError } = await supabase
+  // 3. company_members に owner として登録（admin client でRLSをバイパス）
+  const { error: memberError } = await admin
     .from("company_members")
     .insert({ company_id: company.id, user_id: data.user.id, role: "owner" });
-  if (memberError) return { error: "メンバー情報の登録に失敗しました" };
+  if (memberError) return { error: `メンバー情報の登録に失敗しました: ${memberError.message}` };
 
   // 4. 受付確認メールを送信（失敗してもエラーにしない）
   await sendCompanyRegistered({ companyEmail: email, companyName }).catch(() => null);
