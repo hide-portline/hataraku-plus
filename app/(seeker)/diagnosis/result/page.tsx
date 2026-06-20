@@ -2,11 +2,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import CompanyCard from "@/components/company/CompanyCard";
+import NeonTypeIcon from "@/components/ui/NeonTypeIcon";
 import { retakeDiagnosis } from "@/lib/actions/diagnosis";
 import {
   VALUES_TYPE_LABELS,
   VALUES_TYPE_DESCRIPTIONS,
-  VALUES_TYPE_ICONS,
 } from "@/lib/utils/diagnosis";
 import type { ValuesType, DiagnosisScores } from "@/types/database";
 
@@ -84,8 +84,8 @@ export default async function DiagnosisResultPage() {
           <p className="animate-fade-up text-xs font-semibold tracking-[0.3em] uppercase text-white/30 mb-10">
             Your Values Type
           </p>
-          <div className="animate-scale-in text-6xl mb-6 select-none">
-            {VALUES_TYPE_ICONS[type]}
+          <div className="animate-scale-in mb-8 flex justify-center">
+            <NeonTypeIcon type={type} size="lg" />
           </div>
           <h1 className={`animate-fade-up-2 text-[clamp(2.8rem,7vw,5rem)] font-extrabold leading-tight tracking-tight mb-2 ${TYPE_ACCENT[type]}`}>
             {VALUES_TYPE_LABELS[type].split("（")[0]}
@@ -110,7 +110,7 @@ export default async function DiagnosisResultPage() {
               <div key={t}>
                 <div className="flex justify-between items-baseline mb-2">
                   <span className="font-extrabold text-sm text-[var(--color-text-primary)]">
-                    {VALUES_TYPE_ICONS[t]} {VALUES_TYPE_LABELS[t]}
+                    {VALUES_TYPE_LABELS[t]}
                   </span>
                   <span className="text-xs font-semibold text-[var(--color-text-muted)]">
                     {score} / {MAX}

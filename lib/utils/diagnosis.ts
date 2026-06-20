@@ -31,26 +31,26 @@ export const VALUES_TYPE_LABELS: Record<ValuesType, string> = {
   challenger: "Challenger（挑戦型）",
   stable:     "Stable（安定型）",
   team:       "Team（協調型）",
-  specialist: "Specialist（専門型）",
+  specialist: "Explorer（探究型）",
 };
 
 export const VALUES_TYPE_DESCRIPTIONS: Record<ValuesType, string> = {
   challenger: "変化を恐れず挑戦し続ける。高い目標に向かって積極的に動ける環境で力を発揮します。",
   stable:     "安定した環境で長期的に成果を出す。ルールと信頼関係を大切に、着実に積み上げます。",
   team:       "人との繋がりを大切に、協力しながら目標を達成する。職場の雰囲気と関係性を重視します。",
-  specialist: "深い専門知識を磨き、プロとして高品質な仕事をする。継続的な成長と評価を求めます。",
+  specialist: "知的好奇心を原動力に、深く探究し続ける。専門性を磨きながら新たな発見を追い求めます。",
 };
 
 export const VALUES_TYPE_COLORS: Record<ValuesType, string> = {
-  challenger: "bg-[--color-accent]/10 text-[--color-accent-dark] border-[--color-accent]/30",
-  stable:     "bg-[--color-brand]/10 text-[--color-brand] border-[--color-brand]/30",
-  team:       "bg-green-100 text-green-700 border-green-200",
-  specialist: "bg-purple-100 text-purple-700 border-purple-200",
+  challenger: "bg-orange-100 text-orange-700 border-orange-200",
+  stable:     "bg-green-100  text-green-700  border-green-200",
+  team:       "bg-sky-100    text-sky-700    border-sky-200",
+  specialist: "bg-violet-100 text-violet-700 border-violet-200",
 };
 
 export const VALUES_TYPE_ICONS: Record<ValuesType, string> = {
-  challenger: "🔥",
-  stable:     "🌿",
+  challenger: "⚡",
+  stable:     "🌱",
   team:       "🤝",
-  specialist: "🔬",
+  specialist: "✦",
 };

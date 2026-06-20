@@ -2,10 +2,10 @@ import type { ValuesType } from "@/types/database";
 import { VALUES_TYPE_COLORS } from "@/lib/utils/diagnosis";
 
 const shortLabel: Record<ValuesType, string> = {
-  challenger: "Challenger",
-  stable:     "Stable",
-  team:       "Team",
-  specialist: "Specialist",
+  challenger: "挑戦型",
+  stable:     "安定型",
+  team:       "協調型",
+  specialist: "探究型",
 };
 
 type Props = { type: ValuesType; size?: "sm" | "md" };
