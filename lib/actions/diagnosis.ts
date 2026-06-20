@@ -17,13 +17,15 @@ export async function retakeDiagnosis() {
   redirect("/diagnosis");
 }
 
-export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
+export async function submitUserDiagnosis(
+  answers: DiagnosisAnswer[]
+): Promise<{ redirectTo: string } | { error: string }> {
   const result = submitDiagnosisSchema.safeParse({ answers });
-  if (!result.success) throw new Error(result.error.issues[0].message);
+  if (!result.success) return { error: result.error.issues[0].message };
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) return { redirectTo: "/login" };
 
   // public.users にレコードがない場合（トリガー漏れ対策）作成する
   await supabase.from("users").upsert({
@@ -32,13 +34,13 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
     email: user.email!,
   }, { onConflict: "id" });
 
-  // 二重送信防止: 既に結果が存在する場合は処理しない
+  // 二重送信防止: 既に結果が存在する場合はそのまま結果ページへ
   const { data: existing } = await supabase
     .from("user_diagnosis_results")
     .select("id")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (existing) redirect("/diagnosis/result");
+  if (existing) return { redirectTo: "/diagnosis/result" };
 
   const validatedAnswers = result.data.answers;
   const scores = calcScores(validatedAnswers);
@@ -54,7 +56,7 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
       score: a.score,
     }))
   );
-  if (insertError) throw new Error(insertError.message);
+  if (insertError) return { error: insertError.message };
 
   // 結果を保存（既存があれば削除してから挿入）
   await supabase.from("user_diagnosis_results").delete().eq("user_id", user.id);
@@ -66,7 +68,7 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
     score_team: scores.team,
     score_specialist: scores.specialist,
   });
-  if (upsertError) throw new Error(upsertError.message);
+  if (upsertError) return { error: upsertError.message };
 
   // 全企業のマッチングスコアを1回のRPCで一括計算・保存（N+1解消）
   const { data: allScores } = await supabase.rpc("calculate_all_matching_scores", {
@@ -81,7 +83,7 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
     await supabase.from("matching_scores").upsert(scoreRows, { onConflict: "user_id,company_id" });
   }
 
-  redirect("/diagnosis/result");
+  return { redirectTo: "/diagnosis/result" };
 }
 
 export async function submitCompanyDiagnosis(companyId: string, answers: DiagnosisAnswer[]) {

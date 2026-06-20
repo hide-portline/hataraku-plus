@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { submitUserDiagnosis } from "@/lib/actions/diagnosis";
 import type { DiagnosisAnswer } from "@/lib/utils/diagnosis";
 import type { ValuesType } from "@/types/database";
@@ -17,6 +18,7 @@ type Question = {
 const OPTION_LETTERS = ["A", "B", "C", "D"];
 
 export default function DiagnosisWizard({ questions }: { questions: Question[] }) {
+  const router = useRouter();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<DiagnosisAnswer[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
@@ -49,11 +51,12 @@ export default function DiagnosisWizard({ questions }: { questions: Question[] }
 
     if (isLast) {
       setSubmitting(true);
-      try {
-        await submitUserDiagnosis(updated);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "予期せぬエラーが発生しました");
+      const result = await submitUserDiagnosis(updated);
+      if ("error" in result) {
+        setError(result.error);
         setSubmitting(false);
+      } else {
+        router.push(result.redirectTo);
       }
     } else {
       setIndex(index + 1);
