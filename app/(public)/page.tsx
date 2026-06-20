@@ -19,19 +19,19 @@ export default function TopPage() {
       {/* ヒーロー */}
       <section className="min-h-[92vh] flex flex-col justify-between border-b border-[var(--color-border)]">
         <div className="max-w-7xl mx-auto w-full px-6 pt-16 pb-10 flex-1 flex flex-col justify-center">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 md:gap-12">
             <div className="flex-1">
-              <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-10">
+              <p className="animate-fade-up-1 text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-8 md:mb-10">
                 Awaji Island · Values-Based Recruitment Platform
               </p>
-              <h1 className="text-[clamp(3rem,9vw,7.5rem)] font-extrabold leading-[0.95] tracking-tight text-[var(--color-text-primary)]">
+              <h1 className="animate-fade-up-2 text-[clamp(2.8rem,9vw,7.5rem)] font-extrabold leading-[0.95] tracking-tight text-[var(--color-text-primary)]">
                 条件だけで<br />
                 なく、<br />
                 <span className="text-[var(--color-accent)]">価値観</span>で<br />
                 企業と出会う。
               </h1>
             </div>
-            <div className="md:max-w-xs pb-2">
+            <div className="animate-fade-up-3 md:max-w-xs pb-2">
               <p className="text-base text-[var(--color-text-secondary)] leading-relaxed mb-8">
                 企業文化・想い・働く人の魅力を可視化。淡路島で、自分らしい働き方を見つけてください。
               </p>
@@ -56,8 +56,8 @@ export default function TopPage() {
         </div>
 
         {/* 数字 */}
-        <div className="max-w-7xl mx-auto w-full px-6 pb-12">
-          <div className="flex gap-12 md:gap-20">
+        <div className="animate-fade-up-4 max-w-7xl mx-auto w-full px-6 pb-12">
+          <div className="flex gap-8 sm:gap-12 md:gap-20">
             {stats.map((s) => (
               <div key={s.label}>
                 <p className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)]">{s.value}</p>

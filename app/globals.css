@@ -38,6 +38,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── マーキー ── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -46,6 +47,42 @@ body {
   animation: marquee 20s linear infinite;
 }
 
+/* ── フェードアップ（ページ読み込み時） ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-up-1 { animation: fadeUp 0.6s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-2 { animation: fadeUp 0.6s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-3 { animation: fadeUp 0.6s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-4 { animation: fadeUp 0.6s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ── スケールイン（カード、ダイアログ等） ── */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-scale-in {
+  animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── スクロールバー ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
