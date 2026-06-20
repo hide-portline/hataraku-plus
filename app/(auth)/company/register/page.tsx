@@ -72,12 +72,10 @@ export default function CompanyRegisterPage() {
             id="location" name="location" label="所在地" required
             placeholder="兵庫県淡路市○○"
           />
-          <div>
-            <Input
-              id="website_url" name="website_url" label="ウェブサイトURL（任意）" type="url"
-              placeholder="https://example.com"
-            />
-          </div>
+          <Input
+            id="website_url" name="website_url" label="ウェブサイトURL" type="url"
+            placeholder="https://example.com"
+          />
         </fieldset>
 
         <hr className="border-[var(--color-border)]" />

@@ -104,7 +104,14 @@ export async function companyRegisterAction(
   }
   if (!data.user) return { error: "アカウント作成に失敗しました" };
 
-  // 2. 企業レコードを作成（admin client でRLSをバイパス）
+  // 2. public.users を先に作成（メール未確認でもFKエラーが起きないよう）
+  await admin.from("users").upsert({
+    id: data.user.id,
+    name,
+    email,
+  }, { onConflict: "id" });
+
+  // 3. 企業レコードを作成（admin client でRLSをバイパス）
   const { data: company, error: companyError } = await admin
     .from("companies")
     .insert({
@@ -121,7 +128,7 @@ export async function companyRegisterAction(
     return { error: `企業情報の登録に失敗しました: ${companyError?.message ?? "不明なエラー"}` };
   }
 
-  // 3. company_members に owner として登録（admin client でRLSをバイパス）
+  // 4. company_members に owner として登録（admin client でRLSをバイパス）
   const { error: memberError } = await admin
     .from("company_members")
     .insert({ company_id: company.id, user_id: data.user.id, role: "owner" });
