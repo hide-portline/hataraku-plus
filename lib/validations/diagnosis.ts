@@ -11,7 +11,7 @@ const uuidLike = (msg: string) =>
 export const diagnosisAnswerSchema = z.object({
   questionId: uuidLike("無効な質問IDです"),
   optionId: uuidLike("無効な選択肢IDです"),
-  score: z.number().int().min(-3).max(3),
+  score: z.number().int().min(1).max(4),
   category: valuesTypeEnum,
 });
 
