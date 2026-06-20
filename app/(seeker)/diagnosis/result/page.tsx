@@ -80,17 +80,20 @@ export default async function DiagnosisResultPage() {
     <div className="min-h-screen bg-[var(--color-surface)]">
       {/* ヒーロー：タイプ発表 */}
       <div className={`${TYPE_BG[type]} text-white`}>
-        <div className="max-w-4xl mx-auto px-6 py-20 md:py-36 text-center">
-          <p className="animate-fade-up text-xs font-semibold tracking-[0.3em] uppercase text-white/30 mb-8">
+        <div className="max-w-3xl mx-auto px-6 py-20 md:py-28 text-center">
+          <p className="animate-fade-up text-xs font-semibold tracking-[0.3em] uppercase text-white/30 mb-10">
             Your Values Type
           </p>
-          <div className="animate-scale-in text-8xl md:text-[10rem] mb-6 select-none">
+          <div className="animate-scale-in text-6xl mb-6 select-none">
             {VALUES_TYPE_ICONS[type]}
           </div>
-          <h1 className={`animate-fade-up-2 text-[clamp(2.2rem,8vw,6rem)] font-extrabold leading-[0.9] tracking-tight mb-6 ${TYPE_ACCENT[type]}`}>
-            {VALUES_TYPE_LABELS[type]}
+          <h1 className={`animate-fade-up-2 text-[clamp(2.8rem,7vw,5rem)] font-extrabold leading-tight tracking-tight mb-2 ${TYPE_ACCENT[type]}`}>
+            {VALUES_TYPE_LABELS[type].split("（")[0]}
           </h1>
-          <p className="animate-fade-up-3 text-base md:text-lg text-white/60 leading-relaxed max-w-md mx-auto">
+          <p className={`animate-fade-up-2 text-lg font-semibold mb-8 ${TYPE_ACCENT[type]} opacity-70`}>
+            {VALUES_TYPE_LABELS[type].split("（")[1]?.replace("）", "")}
+          </p>
+          <p className="animate-fade-up-3 text-sm md:text-base text-white/50 leading-relaxed max-w-sm mx-auto">
             {VALUES_TYPE_DESCRIPTIONS[type]}
           </p>
         </div>
