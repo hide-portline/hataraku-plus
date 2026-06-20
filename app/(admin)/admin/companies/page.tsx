@@ -15,7 +15,7 @@ export default async function AdminCompaniesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-6">企業管理</h1>
 
       <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm overflow-hidden">

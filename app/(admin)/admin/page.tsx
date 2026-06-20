@@ -24,10 +24,10 @@ export default async function AdminPage() {
   ];
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-8">管理ダッシュボード</h1>
+    <div className="p-4 md:p-8">
+      <h1 className="text-xl md:text-2xl font-bold text-[var(--color-text-primary)] mb-6">管理ダッシュボード</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {stats.map((s) => (
           <Link key={s.label} href={s.href}>
             <div className={`bg-white rounded-2xl border shadow-sm p-5 hover:shadow-md transition-shadow

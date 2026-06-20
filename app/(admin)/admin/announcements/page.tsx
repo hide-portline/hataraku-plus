@@ -49,7 +49,7 @@ export default async function AdminAnnouncementsPage() {
     .order("id", { ascending: false });
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-4 md:p-8 max-w-3xl">
       <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-6">お知らせ管理</h1>
 
       {/* 作成フォーム */}
