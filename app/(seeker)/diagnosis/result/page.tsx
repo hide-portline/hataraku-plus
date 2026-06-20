@@ -8,6 +8,7 @@ import {
   VALUES_TYPE_LABELS,
   VALUES_TYPE_DESCRIPTIONS,
 } from "@/lib/utils/diagnosis";
+import { formatSalary } from "@/lib/utils/format";
 import type { ValuesType, DiagnosisScores } from "@/types/database";
 
 const TYPE_BG: Record<ValuesType, string> = {
@@ -195,7 +196,7 @@ export default async function DiagnosisResultPage() {
                   <div className="text-right shrink-0 ml-4">
                     {job.salary_min && (
                       <p className="text-sm font-bold text-[var(--color-text-primary)]">
-                        {job.salary_min}〜{job.salary_max}万
+                        {formatSalary(job.salary_min, job.salary_max)}
                       </p>
                     )}
                     <span className="text-xs text-[var(--color-text-muted)] group-hover:text-[var(--color-brand)] transition-colors">
