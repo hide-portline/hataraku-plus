@@ -58,12 +58,12 @@ export async function logoutAction() {
 export async function deleteAccountAction() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "ログインが必要です" };
+  if (!user) redirect("/login");
 
   // auth.users から削除 → ON DELETE CASCADE で関連データも全削除
   const admin = createAdminClient();
   const { error } = await admin.auth.admin.deleteUser(user.id);
-  if (error) return { error: "アカウントの削除に失敗しました" };
+  if (error) redirect("/?error=delete_failed");
 
   redirect("/");
 }

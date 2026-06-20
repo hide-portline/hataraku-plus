@@ -1,10 +1,35 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import ResultCard from "@/components/diagnosis/ResultCard";
 import CompanyCard from "@/components/company/CompanyCard";
 import { retakeDiagnosis } from "@/lib/actions/diagnosis";
+import {
+  VALUES_TYPE_LABELS,
+  VALUES_TYPE_DESCRIPTIONS,
+  VALUES_TYPE_ICONS,
+} from "@/lib/utils/diagnosis";
 import type { ValuesType, DiagnosisScores } from "@/types/database";
+
+const TYPE_BG: Record<ValuesType, string> = {
+  challenger: "bg-[#1a0a00]",
+  stable:     "bg-[#00140a]",
+  team:       "bg-[#000d1a]",
+  specialist: "bg-[#0d0014]",
+};
+
+const TYPE_ACCENT: Record<ValuesType, string> = {
+  challenger: "text-[var(--color-accent)]",
+  stable:     "text-emerald-400",
+  team:       "text-sky-400",
+  specialist: "text-violet-400",
+};
+
+const TYPE_BAR: Record<ValuesType, string> = {
+  challenger: "bg-[var(--color-accent)]",
+  stable:     "bg-emerald-400",
+  team:       "bg-sky-400",
+  specialist: "bg-violet-400",
+};
 
 export default async function DiagnosisResultPage() {
   const supabase = await createClient();
@@ -21,129 +46,181 @@ export default async function DiagnosisResultPage() {
 
   if (!result) redirect("/diagnosis");
 
+  const type = result.values_type as ValuesType;
   const scores: DiagnosisScores = {
     challenger: result.score_challenger,
     stable: result.score_stable,
     team: result.score_team,
     specialist: result.score_specialist,
   };
+  const MAX = 20;
+  const sortedScores = (Object.entries(scores) as [ValuesType, number][]).sort(([, a], [, b]) => b - a);
 
-  // マッチングスコア済みの企業を取得（企業診断済みの場合）
   const { data: matchScores } = await supabase
     .from("matching_scores")
     .select("company_id, score")
     .eq("user_id", user.id);
-
   const scoreMap = new Map(matchScores?.map((s) => [s.company_id, s.score]) ?? []);
 
-  // 同タイプの企業を6社取得
   const { data: matchedCompanies } = await supabase
     .from("companies")
     .select("*, regions(name)")
     .eq("status", "approved")
-    .eq("values_type", result.values_type)
+    .eq("values_type", type)
     .limit(6);
 
-  // おすすめ求人（同タイプ）
   const { data: matchedJobs } = await supabase
     .from("jobs")
     .select("id, title, location, employment_type, salary_min, salary_max, companies(company_name)")
     .eq("is_published", true)
-    .eq("values_type", result.values_type)
+    .eq("values_type", type)
     .limit(4);
 
   return (
-    <div className="bg-[var(--color-surface)] min-h-screen">
-      <div className="bg-[var(--color-brand)] text-white text-center py-10">
-        <h1 className="text-2xl font-bold">診断結果</h1>
-        <p className="text-white/70 text-sm mt-1">あなたの価値観タイプが判明しました</p>
+    <div className="min-h-screen bg-[var(--color-surface)]">
+      {/* ヒーロー：タイプ発表 */}
+      <div className={`${TYPE_BG[type]} text-white`}>
+        <div className="max-w-4xl mx-auto px-6 py-24 md:py-36 text-center">
+          <p className="text-xs font-semibold tracking-[0.3em] uppercase text-white/30 mb-8">
+            Your Values Type
+          </p>
+          <div className="text-8xl md:text-[10rem] mb-6 select-none">
+            {VALUES_TYPE_ICONS[type]}
+          </div>
+          <h1 className={`text-[clamp(2.5rem,8vw,6rem)] font-extrabold leading-[0.9] tracking-tight mb-6 ${TYPE_ACCENT[type]}`}>
+            {VALUES_TYPE_LABELS[type]}
+          </h1>
+          <p className="text-base md:text-lg text-white/60 leading-relaxed max-w-md mx-auto">
+            {VALUES_TYPE_DESCRIPTIONS[type]}
+          </p>
+        </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <ResultCard type={result.values_type as ValuesType} scores={scores} />
+      {/* スコアバー */}
+      <div className="border-b border-[var(--color-border)]">
+        <div className="max-w-2xl mx-auto px-6 py-16">
+          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-8">
+            Score Breakdown
+          </p>
+          <div className="flex flex-col gap-6">
+            {sortedScores.map(([t, score]) => (
+              <div key={t}>
+                <div className="flex justify-between items-baseline mb-2">
+                  <span className="font-extrabold text-sm text-[var(--color-text-primary)]">
+                    {VALUES_TYPE_ICONS[t]} {VALUES_TYPE_LABELS[t]}
+                  </span>
+                  <span className="text-xs font-semibold text-[var(--color-text-muted)]">
+                    {score} / {MAX}
+                  </span>
+                </div>
+                <div className="h-1.5 bg-[var(--color-border)] rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${TYPE_BAR[t]}`}
+                    style={{ width: `${(score / MAX) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-        {/* おすすめ企業 */}
-        {matchedCompanies && matchedCompanies.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">
+      {/* おすすめ企業 */}
+      {matchedCompanies && matchedCompanies.length > 0 && (
+        <div className="max-w-7xl mx-auto px-6 py-16 border-b border-[var(--color-border)]">
+          <div className="mb-10">
+            <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-3">
+              Matched Companies
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)]">
               あなたにおすすめの企業
             </h2>
-            <p className="text-sm text-[var(--color-text-secondary)] mb-6">
+            <p className="text-sm text-[var(--color-text-secondary)] mt-2">
               価値観タイプが一致する淡路島の企業です。
             </p>
-            <div className="flex flex-col gap-6">
-              {matchedCompanies.map((c) => {
-                const matchScore = scoreMap.get(c.id);
-                return (
-                  <div key={c.id} className="relative">
-                    {matchScore !== undefined && (
-                      <div className="absolute top-0 right-0 z-10 bg-[var(--color-brand)] text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
-                        マッチ度 {matchScore}%
-                      </div>
-                    )}
-                    <CompanyCard company={c} />
-                  </div>
-                );
-              })}
-            </div>
-            <Link href="/companies" className="block mt-6 text-center text-sm text-[var(--color-brand)] hover:underline">
-              すべての企業を見る →
-            </Link>
           </div>
-        )}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+            {matchedCompanies.map((c) => {
+              const matchScore = scoreMap.get(c.id);
+              return (
+                <div key={c.id} className="relative">
+                  {matchScore !== undefined && (
+                    <div className="absolute top-0 right-0 z-10 bg-[var(--color-text-primary)] text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
+                      マッチ度 {matchScore}%
+                    </div>
+                  )}
+                  <CompanyCard company={c} />
+                </div>
+              );
+            })}
+          </div>
+          <Link href="/companies" className="block mt-8 text-center text-sm font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-brand)] transition-colors">
+            すべての企業を見る →
+          </Link>
+        </div>
+      )}
 
-        {/* おすすめ求人 */}
-        {matchedJobs && matchedJobs.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">
+      {/* おすすめ求人 */}
+      {matchedJobs && matchedJobs.length > 0 && (
+        <div className="max-w-3xl mx-auto px-6 py-16 border-b border-[var(--color-border)]">
+          <div className="mb-8">
+            <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-3">
+              Matched Jobs
+            </p>
+            <h2 className="text-2xl font-extrabold text-[var(--color-text-primary)]">
               おすすめの求人
             </h2>
-            <p className="text-sm text-[var(--color-text-secondary)] mb-6">
-              あなたの価値観に合った求人をピックアップしました。
-            </p>
-            <div className="flex flex-col gap-3">
-              {matchedJobs.map((job) => {
-                const companyName = Array.isArray(job.companies)
-                  ? job.companies[0]?.company_name
-                  : (job.companies as { company_name: string } | null)?.company_name;
-                return (
-                  <Link
-                    key={job.id}
-                    href={`/jobs/${job.id}`}
-                    className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm px-5 py-4 flex justify-between items-center hover:border-[var(--color-brand)] transition-colors group"
-                  >
-                    <div>
-                      <p className="text-xs text-[var(--color-text-muted)] mb-1">{companyName}</p>
-                      <p className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-brand)] transition-colors">
-                        {job.title}
-                      </p>
-                      <p className="text-xs text-[var(--color-text-muted)] mt-1">{job.location}</p>
-                    </div>
+          </div>
+          <div className="flex flex-col divide-y divide-[var(--color-border)]">
+            {matchedJobs.map((job) => {
+              const companyName = Array.isArray(job.companies)
+                ? job.companies[0]?.company_name
+                : (job.companies as { company_name: string } | null)?.company_name;
+              return (
+                <Link
+                  key={job.id}
+                  href={`/jobs/${job.id}`}
+                  className="flex justify-between items-center py-5 group"
+                >
+                  <div>
+                    <p className="text-xs text-[var(--color-text-muted)] mb-1">{companyName}</p>
+                    <p className="font-extrabold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand)] transition-colors">
+                      {job.title}
+                    </p>
+                    <p className="text-xs text-[var(--color-text-muted)] mt-1">{job.location}</p>
+                  </div>
+                  <div className="text-right shrink-0 ml-4">
                     {job.salary_min && (
-                      <p className="text-sm font-bold text-[var(--color-brand)] shrink-0 ml-4">
+                      <p className="text-sm font-bold text-[var(--color-text-primary)]">
                         {job.salary_min}〜{job.salary_max}万
                       </p>
                     )}
-                  </Link>
-                );
-              })}
-            </div>
-            <Link href="/jobs" className="block mt-6 text-center text-sm text-[var(--color-brand)] hover:underline">
-              すべての求人を見る →
-            </Link>
+                    <span className="text-xs text-[var(--color-text-muted)] group-hover:text-[var(--color-brand)] transition-colors">
+                      詳細 →
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-        )}
+          <Link href="/jobs" className="block mt-6 text-center text-sm font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-brand)] transition-colors">
+            すべての求人を見る →
+          </Link>
+        </div>
+      )}
 
-        <div className="mt-10 flex flex-col sm:flex-row gap-3">
+      {/* アクション */}
+      <div className="max-w-3xl mx-auto px-6 py-16">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Link href="/companies" className="flex-1">
-            <button className="w-full py-3 rounded-full bg-[var(--color-brand)] text-white font-semibold hover:bg-[var(--color-brand-dark)] transition-colors">
-              すべての企業を見る
-            </button>
+            <div className="w-full py-4 rounded-2xl bg-[var(--color-text-primary)] text-white text-sm font-bold text-center hover:bg-[var(--color-brand)] transition-colors">
+              企業一覧を見る
+            </div>
           </Link>
           <form action={retakeDiagnosis} className="flex-1">
             <button
               type="submit"
-              className="w-full py-3 rounded-full border border-[var(--color-border)] text-[var(--color-text-secondary)] font-semibold hover:bg-white transition-colors"
+              className="w-full py-4 rounded-2xl border border-[var(--color-border)] text-sm font-bold text-[var(--color-text-secondary)] hover:border-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] transition-colors"
             >
               もう一度診断する
             </button>

@@ -336,6 +336,10 @@ export type Database = {
         Args: { p_user_id: string; p_company_id: string };
         Returns: number;
       };
+      calculate_all_matching_scores: {
+        Args: { p_user_id: string };
+        Returns: { company_id: string; score: number }[];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

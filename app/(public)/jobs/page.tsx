@@ -48,45 +48,53 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
   const isFiltered = !!(params.employment_type || params.work_style || params.values_type);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--color-brand)] mb-2">
-            求人一覧
+    <div className="min-h-screen">
+      {/* ヘッダー */}
+      <div className="border-b border-[var(--color-border)]">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+          <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-muted)] mb-4">
+            Jobs
           </p>
-          <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">淡路島・周辺の求人を探す</h1>
-          <p className="text-[var(--color-text-secondary)] max-w-2xl">
-            地方でのキャリアも、価値観にフィットする企業も。あなたの働き方に合った求人を見つけてください。
-          </p>
-        </div>
-        <div className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] shrink-0">
-          {isFiltered ? `${totalCount} 件ヒット` : `公開求人 ${totalCount} 件`}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold leading-[0.9] tracking-tight text-[var(--color-text-primary)]">
+              求人を<br />探す
+            </h1>
+            <div className="text-right">
+              <p className="text-sm text-[var(--color-text-secondary)] max-w-xs leading-relaxed mb-3">
+                地方でのキャリアも、価値観にフィットする企業も。<br />あなたの働き方に合った求人を。
+              </p>
+              <span className="inline-block px-4 py-2 rounded-full border border-[var(--color-border)] text-sm font-extrabold text-[var(--color-text-primary)]">
+                {isFiltered ? `${totalCount} 件ヒット` : `公開中 ${totalCount} 件`}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <Suspense>
-        <JobFilters />
-      </Suspense>
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <Suspense>
+          <JobFilters />
+        </Suspense>
 
-      {!jobs || jobs.length === 0 ? (
-        <div className="text-center py-24 text-[var(--color-text-muted)]">
-          <p className="text-4xl mb-4">{isFiltered ? "🔍" : "📋"}</p>
-          <p className="font-semibold">
-            {isFiltered ? "条件に合う求人が見つかりませんでした" : "まもなく求人が掲載されます"}
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {jobs.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
+        {!jobs || jobs.length === 0 ? (
+          <div className="text-center py-32 text-[var(--color-text-muted)]">
+            <p className="font-semibold">
+              {isFiltered ? "条件に合う求人が見つかりませんでした" : "まもなく求人が掲載されます"}
+            </p>
           </div>
-          <Suspense>
-            <Pagination currentPage={currentPage} totalPages={totalPages} />
-          </Suspense>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+              {jobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+            <Suspense>
+              <Pagination currentPage={currentPage} totalPages={totalPages} />
+            </Suspense>
+          </>
+        )}
+      </div>
     </div>
   );
 }

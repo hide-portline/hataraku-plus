@@ -24,48 +24,114 @@ export default async function ArticlesPage() {
     .eq("is_published", true)
     .order("published_at", { ascending: false });
 
+  const featured = articles?.[0];
+  const rest = articles?.slice(1) ?? [];
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">ストーリー</h1>
-        <p className="text-[var(--color-text-secondary)]">
-          企業の文化・想い・働く人のリアルを伝えます。
-        </p>
+    <div className="min-h-screen">
+      {/* ヘッダー */}
+      <div className="border-b border-[var(--color-border)]">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+          <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-muted)] mb-4">
+            Stories
+          </p>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold leading-[0.9] tracking-tight text-[var(--color-text-primary)]">
+              淡路島の<br />ストーリー
+            </h1>
+            <p className="text-sm text-[var(--color-text-secondary)] max-w-xs leading-relaxed">
+              企業の文化、移住者のリアル、<br />島で働くことの魅力を伝えます。
+            </p>
+          </div>
+        </div>
       </div>
 
       {!articles || articles.length === 0 ? (
-        <div className="text-center py-24 text-[var(--color-text-muted)]">
-          <p className="text-4xl mb-4">📖</p>
-          <p className="font-semibold">記事を準備中です</p>
+        <div className="text-center py-32 text-[var(--color-text-muted)]">
+          <p className="text-sm font-semibold">記事を準備中です</p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((a) => (
-            <Link key={a.id} href={`/articles/${a.id}`} className="group">
-              <article className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all overflow-hidden">
-                <div className="aspect-video bg-[var(--color-surface)] relative overflow-hidden">
-                  {a.thumbnail_url ? (
-                    <Image src={a.thumbnail_url} alt={a.title} fill className="object-cover" />
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          {/* フィーチャー記事 */}
+          {featured && (
+            <Link href={`/articles/${featured.id}`} className="group block mb-16">
+              <article className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+                <div className="aspect-[4/3] md:aspect-auto md:h-[480px] bg-[var(--color-surface)] rounded-2xl overflow-hidden relative">
+                  {featured.thumbnail_url ? (
+                    <Image
+                      src={featured.thumbnail_url}
+                      alt={featured.title}
+                      fill
+                      className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                    />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl">📰</div>
+                    <div className="w-full h-full flex items-center justify-center bg-[var(--color-text-primary)] text-white/20 text-8xl font-extrabold">
+                      S
+                    </div>
                   )}
                 </div>
-                <div className="p-5">
-                  {a.companies && (
-                    <p className="text-xs text-[var(--color-brand)] font-semibold mb-1">
-                      {Array.isArray(a.companies) ? a.companies[0]?.company_name : (a.companies as { company_name: string }).company_name}
+                <div className="py-4">
+                  <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--color-brand)] mb-4">
+                    Featured
+                  </p>
+                  {featured.companies?.company_name && (
+                    <p className="text-xs text-[var(--color-text-muted)] mb-2">
+                      {featured.companies.company_name}
                     </p>
                   )}
-                  <h2 className="font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand)] transition-colors leading-snug mb-2 line-clamp-2">
-                    {a.title}
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)] leading-snug mb-4 group-hover:text-[var(--color-brand)] transition-colors">
+                    {featured.title}
                   </h2>
-                  {a.published_at && (
-                    <p className="text-xs text-[var(--color-text-muted)]">{formatDate(a.published_at)}</p>
+                  {featured.published_at && (
+                    <p className="text-xs text-[var(--color-text-muted)]">{formatDate(featured.published_at)}</p>
                   )}
+                  <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand)] transition-colors">
+                    読む
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
                 </div>
               </article>
             </Link>
-          ))}
+          )}
+
+          {/* 残り記事グリッド */}
+          {rest.length > 0 && (
+            <>
+              <div className="border-t border-[var(--color-border)] pt-12">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+                  {rest.map((a) => (
+                    <Link key={a.id} href={`/articles/${a.id}`} className="group">
+                      <article>
+                        <div className="aspect-[4/3] bg-[var(--color-surface)] rounded-xl overflow-hidden relative mb-4">
+                          {a.thumbnail_url ? (
+                            <Image
+                              src={a.thumbnail_url}
+                              alt={a.title}
+                              fill
+                              className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-[var(--color-border)]" />
+                          )}
+                        </div>
+                        {a.companies?.company_name && (
+                          <p className="text-xs text-[var(--color-brand)] font-semibold mb-1">
+                            {a.companies.company_name}
+                          </p>
+                        )}
+                        <h2 className="font-extrabold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand)] transition-colors leading-snug mb-2 line-clamp-2">
+                          {a.title}
+                        </h2>
+                        {a.published_at && (
+                          <p className="text-xs text-[var(--color-text-muted)]">{formatDate(a.published_at)}</p>
+                        )}
+                      </article>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
