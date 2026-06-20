@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import CompanyCard from "@/components/company/CompanyCard";
 import CompanyFilters from "@/components/company/CompanyFilters";
 import Pagination from "@/components/ui/Pagination";
+import Reveal from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
   title: "企業一覧",
@@ -41,20 +42,30 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
   const isFiltered = !!params.values_type;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20">
-      <div className="border-b border-[var(--color-border)] pb-12 mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-3">
+    <div className="min-h-screen">
+      {/* ヘッダー */}
+      <div className="border-b border-[var(--color-border)]">
+        <div className="max-w-7xl mx-auto px-6 py-10 md:py-24">
+          <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-muted)] mb-4">
             Companies
           </p>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--color-text-primary)]">
-            淡路島の企業を探す
-          </h1>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold leading-[0.9] tracking-tight text-[var(--color-text-primary)]">
+              企業を<br />探す
+            </h1>
+            <div className="text-right">
+              <p className="text-sm text-[var(--color-text-secondary)] max-w-xs leading-relaxed mb-3">
+                農業・観光・IT・食品加工まで。<br />淡路島で働く企業の価値観を知る。
+              </p>
+              <span className="inline-block px-4 py-2 rounded-full border border-[var(--color-border)] text-sm font-extrabold text-[var(--color-text-primary)]">
+                {isFiltered ? `${totalCount} 社ヒット` : `${totalCount} 社掲載中`}
+              </span>
+            </div>
+          </div>
         </div>
-        <p className="text-sm text-[var(--color-text-muted)] shrink-0">
-          {isFiltered ? `${totalCount} 社ヒット` : `${totalCount} 社掲載中`}
-        </p>
       </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-12">
 
       <Suspense>
         <CompanyFilters />
@@ -70,8 +81,10 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
       ) : (
         <>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
-            {companies.map((c) => (
-              <CompanyCard key={c.id} company={c} />
+            {companies.map((c, i) => (
+              <Reveal key={c.id} delay={i % 3 * 80}>
+                <CompanyCard company={c} />
+              </Reveal>
             ))}
           </div>
           <Suspense>
@@ -79,6 +92,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
           </Suspense>
         </>
       )}
+      </div>
     </div>
   );
 }

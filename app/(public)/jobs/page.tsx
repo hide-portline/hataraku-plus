@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import JobCard from "@/components/job/JobCard";
 import JobFilters from "@/components/job/JobFilters";
 import Pagination from "@/components/ui/Pagination";
+import Reveal from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
   title: "求人一覧",
@@ -51,7 +52,7 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
     <div className="min-h-screen">
       {/* ヘッダー */}
       <div className="border-b border-[var(--color-border)]">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-6 py-10 md:py-24">
           <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-muted)] mb-4">
             Jobs
           </p>
@@ -84,9 +85,11 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
           </div>
         ) : (
           <>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
-              {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 mt-8">
+              {jobs.map((job, i) => (
+                <Reveal key={job.id} delay={i % 3 * 80}>
+                  <JobCard job={job} />
+                </Reveal>
               ))}
             </div>
             <Suspense>

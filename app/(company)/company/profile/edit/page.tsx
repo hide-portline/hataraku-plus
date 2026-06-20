@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { companyProfileSchema } from "@/lib/validations/profile";
 
 async function saveProfile(formData: FormData) {
   "use server";
@@ -16,20 +17,11 @@ async function saveProfile(formData: FormData) {
     .single();
   if (!membership) redirect("/dashboard");
 
-  const employeeCount = formData.get("employee_count") as string;
-  const foundedYear = formData.get("founded_year") as string;
+  const raw = Object.fromEntries(formData);
+  const result = companyProfileSchema.safeParse(raw);
+  if (!result.success) throw new Error(result.error.issues[0].message);
 
-  await supabase.from("companies").update({
-    company_name: formData.get("company_name") as string,
-    industry: (formData.get("industry") as string) || null,
-    description: (formData.get("description") as string) || null,
-    vision: (formData.get("vision") as string) || null,
-    culture_description: (formData.get("culture_description") as string) || null,
-    location: (formData.get("location") as string) || null,
-    website_url: (formData.get("website_url") as string) || null,
-    employee_count: employeeCount ? Number(employeeCount) : null,
-    founded_year: foundedYear ? Number(foundedYear) : null,
-  }).eq("id", membership.company_id);
+  await supabase.from("companies").update(result.data).eq("id", membership.company_id);
 
   redirect("/dashboard");
 }

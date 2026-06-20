@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { seekerProfileSchema } from "@/lib/validations/profile";
 
 async function saveProfile(formData: FormData) {
   "use server";
@@ -10,13 +11,11 @@ async function saveProfile(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  await supabase.from("users").update({
-    name: formData.get("name") as string,
-    phone: (formData.get("phone") as string) || null,
-    bio: (formData.get("bio") as string) || null,
-    desired_location: (formData.get("desired_location") as string) || null,
-    employment_type_pref: (formData.get("employment_type_pref") as string) || null,
-  }).eq("id", user.id);
+  const raw = Object.fromEntries(formData);
+  const result = seekerProfileSchema.safeParse(raw);
+  if (!result.success) throw new Error(result.error.issues[0].message);
+
+  await supabase.from("users").update(result.data).eq("id", user.id);
 
   redirect("/mypage");
 }

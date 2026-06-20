@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import type { EmploymentType, WorkStyle, ValuesType } from "@/types/database";
+import { createJobSchema } from "@/lib/validations/job";
 
 async function createJob(formData: FormData) {
   "use server";
@@ -17,23 +17,16 @@ async function createJob(formData: FormData) {
     .single();
   if (!membership) redirect("/dashboard");
 
-  const salaryMin = formData.get("salary_min") as string;
-  const salaryMax = formData.get("salary_max") as string;
+  const raw = Object.fromEntries(formData);
+  const result = createJobSchema.safeParse(raw);
+  if (!result.success) throw new Error(result.error.issues[0].message);
 
-  await supabase.from("jobs").insert({
+  const { error } = await supabase.from("jobs").insert({
     company_id: membership.company_id,
-    title: formData.get("title") as string,
-    employment_type: formData.get("employment_type") as EmploymentType,
-    salary_min: salaryMin ? Number(salaryMin) : null,
-    salary_max: salaryMax ? Number(salaryMax) : null,
-    location: (formData.get("location") as string) || null,
-    description: (formData.get("description") as string) || null,
-    required_skills: (formData.get("required_skills") as string) || null,
-    benefits: (formData.get("benefits") as string) || null,
-    work_style: (formData.get("work_style") as WorkStyle) || null,
-    values_type: (formData.get("values_type") as ValuesType) || null,
+    ...result.data,
     is_published: false,
   });
+  if (error) throw new Error(error.message);
 
   redirect("/company/jobs");
 }

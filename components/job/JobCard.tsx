@@ -12,65 +12,46 @@ export default function JobCard({ job }: Props) {
   const company = job.companies;
 
   return (
-    <Link href={`/jobs/${job.id}`} className="block group">
-      <div className="bg-white rounded-[28px] border border-[var(--color-border)] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all p-6 flex flex-col gap-4 h-full">
-        <div className="flex justify-between items-start gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden shrink-0">
-              {company?.logo_url ? (
-                <Image
-                  src={company.logo_url}
-                  alt={company.company_name}
-                  width={48}
-                  height={48}
-                  className="object-contain"
-                />
-              ) : (
-                <span className="text-sm font-bold text-[var(--color-brand)]">
-                  {company?.company_name?.charAt(0) ?? "?"}
-                </span>
-              )}
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-text-secondary)] mb-1">
-                {company?.company_name ?? "企業名なし"}
-              </p>
-              <h3 className="text-lg font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-brand)] transition-colors leading-snug">
-                {job.title}
-              </h3>
-            </div>
-          </div>
-          {job.values_type && <ValuesTypeBadge type={job.values_type} size="md" />}
+    <Link href={`/jobs/${job.id}`} className="group block border-t border-[var(--color-border)] pt-6 pb-8">
+      {/* 企業名 + ロゴ */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-6 h-6 rounded bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden shrink-0">
+          {company?.logo_url ? (
+            <Image src={company.logo_url} alt={company.company_name} width={24} height={24} className="object-contain" />
+          ) : (
+            <span className="text-[9px] font-bold text-[var(--color-brand)]">
+              {company?.company_name?.charAt(0) ?? "?"}
+            </span>
+          )}
         </div>
-
-        <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed line-clamp-3">
-          {job.description ?? "仕事内容の概要がありません。詳細ページでご確認ください。"}
+        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--color-text-muted)]">
+          {company?.company_name ?? "—"}
+          {job.location && <span className="ml-1.5">· {job.location}</span>}
         </p>
+      </div>
 
-        <div className="flex flex-wrap gap-2">
-          <span className="text-xs bg-[var(--color-surface)] text-[var(--color-text-secondary)] px-3 py-1 rounded-full border border-[var(--color-border)]">
-            {formatEmploymentType(job.employment_type)}
-          </span>
+      {/* タイトル */}
+      <h3 className="text-xl font-extrabold text-[var(--color-text-primary)] leading-snug mb-3 group-hover:text-[var(--color-accent)] transition-colors duration-200">
+        {job.title}
+      </h3>
+
+      {/* 説明 */}
+      <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed line-clamp-2 mb-4">
+        {job.description ?? "詳細ページでご確認ください。"}
+      </p>
+
+      {/* メタ情報 */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-xs text-[var(--color-text-muted)]">{formatEmploymentType(job.employment_type)}</span>
           {job.work_style && (
-            <span className="text-xs bg-[var(--color-surface)] text-[var(--color-text-secondary)] px-3 py-1 rounded-full border border-[var(--color-border)]">
-              {formatWorkStyle(job.work_style)}
-            </span>
+            <span className="text-xs text-[var(--color-text-muted)]">· {formatWorkStyle(job.work_style)}</span>
           )}
-          {job.location && (
-            <span className="text-xs bg-[var(--color-surface)] text-[var(--color-text-secondary)] px-3 py-1 rounded-full border border-[var(--color-border)]">
-              📍 {job.location}
-            </span>
-          )}
+          {job.values_type && <ValuesTypeBadge type={job.values_type} size="sm" />}
         </div>
-
-        <div className="mt-auto flex items-center justify-between gap-4 pt-4 border-t border-[var(--color-border)] text-sm">
-          <span className="font-semibold text-[var(--color-text-primary)]">
-            {formatSalary(job.salary_min, job.salary_max)}
-          </span>
-          <span className="text-xs text-[var(--color-text-muted)]">
-            {company?.company_name ? `${company.company_name} 発` : "求人情報"}
-          </span>
-        </div>
+        <span className="text-sm font-bold text-[var(--color-text-primary)] shrink-0">
+          {formatSalary(job.salary_min, job.salary_max)}
+        </span>
       </div>
     </Link>
   );

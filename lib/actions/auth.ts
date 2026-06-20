@@ -4,18 +4,53 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendCompanyRegistered } from "@/lib/email/send";
+import { loginSchema, registerSchema, companyRegisterSchema } from "@/lib/validations/auth";
+import { logError } from "@/lib/monitoring";
+
+function getAdminEmails(): string[] {
+  return process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim().toLowerCase()).filter(Boolean) ?? [];
+}
+
+export async function adminLoginAction(
+  _prevState: { error: string } | undefined,
+  formData: FormData
+) {
+  const raw = { email: formData.get("email"), password: formData.get("password") };
+  const result = loginSchema.safeParse(raw);
+  if (!result.success) return { error: result.error.issues[0].message };
+
+  const { email, password } = result.data;
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) return { error: "メールアドレスまたはパスワードが正しくありません" };
+
+  if (!getAdminEmails().includes(email.toLowerCase())) {
+    await supabase.auth.signOut();
+    return { error: "管理者権限がありません" };
+  }
+
+  redirect("/admin");
+}
 
 export async function loginAction(
   redirectTo: string,
   _prevState: { error: string } | undefined,
   formData: FormData
 ) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const raw = { email: formData.get("email"), password: formData.get("password") };
+  const result = loginSchema.safeParse(raw);
+  if (!result.success) return { error: result.error.issues[0].message };
+
+  const { email, password } = result.data;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: "メールアドレスまたはパスワードが正しくありません" };
+
+  if (getAdminEmails().includes(email.toLowerCase())) {
+    redirect("/admin");
+  }
 
   // //evil.com のようなプロトコル相対URLによるオープンリダイレクトを防止
   const safeRedirect = /^\/[^/]/.test(redirectTo) ? redirectTo : "/mypage";
@@ -23,23 +58,34 @@ export async function loginAction(
 }
 
 export async function registerAction(
-  _prevState: { error?: string; emailSent?: boolean } | undefined,
+  _prevState: { error?: string; emailSent?: boolean; redirectToLogin?: boolean } | undefined,
   formData: FormData
-) {
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+): Promise<{ error?: string; emailSent?: boolean; redirectToLogin?: boolean } | undefined> {
+  const raw = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+  const result = registerSchema.safeParse(raw);
+  if (!result.success) return { error: result.error.issues[0].message };
+
+  const { name, email, password } = result.data;
   const supabase = await createClient();
 
-  // name をメタデータに渡す → DBトリガーがユーザーレコードを自動作成する
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { name } },
+    options: {
+      data: { name },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://hataraku-plus.vercel.app"}/auth/callback`,
+    },
   });
 
   if (error) return { error: "登録に失敗しました。別のメールアドレスをお試しください" };
   if (!data.user) return { error: "登録に失敗しました" };
+
+  // 既存メール（Supabaseはエラーを返さず identities が空になる）
+  if (data.user.identities?.length === 0) return { redirectToLogin: true };
 
   // メール確認が必要な場合（セッションがない）
   if (!data.session) {
@@ -69,23 +115,22 @@ export async function deleteAccountAction() {
 }
 
 export async function companyRegisterAction(
-  _prevState: { error?: string; registered?: boolean } | undefined,
+  _prevState: { error?: string; registered?: boolean; redirectToLogin?: boolean } | undefined,
   formData: FormData
 ) {
-  const companyName = (formData.get("company_name") as string)?.trim();
-  const industry    = (formData.get("industry")     as string)?.trim();
-  const location    = (formData.get("location")     as string)?.trim();
-  const websiteUrl  = (formData.get("website_url")  as string)?.trim();
-  const name        = (formData.get("name")         as string)?.trim();
-  const email       = (formData.get("email")        as string)?.trim();
-  const password    =  formData.get("password")     as string;
+  const raw = {
+    company_name: formData.get("company_name"),
+    industry: formData.get("industry"),
+    location: formData.get("location"),
+    website_url: formData.get("website_url"),
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+  const result = companyRegisterSchema.safeParse(raw);
+  if (!result.success) return { error: result.error.issues[0].message };
 
-  if (!companyName || !industry || !location || !name || !email || !password) {
-    return { error: "必須項目をすべて入力してください（ウェブサイトURLのみ任意）" };
-  }
-  if (password.length < 8) {
-    return { error: "パスワードは8文字以上で設定してください" };
-  }
+  const { company_name, industry, location, website_url, name, email, password } = result.data;
 
   const supabase = await createClient();
   const admin = createAdminClient();
@@ -94,49 +139,42 @@ export async function companyRegisterAction(
   const { data, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { name } },
+    options: {
+      data: { name },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://hataraku-plus.vercel.app"}/auth/callback`,
+    },
   });
   if (signUpError) {
     if (signUpError.message.includes("already registered") || signUpError.message.includes("already been registered")) {
-      return { error: "このメールアドレスはすでに登録されています" };
+      return { redirectToLogin: true };
     }
     return { error: `アカウント作成に失敗しました: ${signUpError.message}` };
   }
   if (!data.user) return { error: "アカウント作成に失敗しました" };
+  // メール確認ONの場合、既存ユーザーは identities が空で返る
+  if (data.user.identities?.length === 0) return { redirectToLogin: true };
 
-  // 2. public.users を先に作成（メール未確認でもFKエラーが起きないよう）
-  const { error: userUpsertError } = await admin.from("users").upsert({
-    id: data.user.id,
-    name,
-    email,
-  }, { onConflict: "id" });
-  if (userUpsertError) return { error: `ユーザー情報の作成に失敗しました: ${userUpsertError.message}` };
-
-  // 3. 企業レコードを作成（admin client でRLSをバイパス）
-  const { data: company, error: companyError } = await admin
-    .from("companies")
-    .insert({
-      company_name: companyName,
-      industry:     industry    || null,
-      location:     location    || null,
-      website_url:  websiteUrl  || null,
-      contact_email: email,
-      status: "pending",
-    })
-    .select("id")
-    .single();
-  if (companyError || !company) {
-    return { error: `企業情報の登録に失敗しました: ${companyError?.message ?? "不明なエラー"}` };
+  // 2-4. users・companies・company_members をDBファンクションで一括登録（トランザクション保証）
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: registerError } = await (admin as any).rpc("register_company", {
+    p_user_id:     data.user.id,
+    p_name:        name,
+    p_email:       email,
+    p_company_name: company_name,
+    p_industry:    industry || null,
+    p_location:    location || null,
+    p_website_url: website_url || null,
+  });
+  if (registerError) {
+    // auth.users が作成済みのためロールバックできないが、ゾンビ化を防ぐため auth ユーザーを削除
+    await admin.auth.admin.deleteUser(data.user.id).catch(() => null);
+    return { error: `企業登録に失敗しました: ${registerError.message}` };
   }
 
-  // 4. company_members に owner として登録（admin client でRLSをバイパス）
-  const { error: memberError } = await admin
-    .from("company_members")
-    .insert({ company_id: company.id, user_id: data.user.id, role: "owner" });
-  if (memberError) return { error: `メンバー情報の登録に失敗しました: ${memberError.message}` };
-
-  // 4. 受付確認メールを送信（失敗してもエラーにしない）
-  await sendCompanyRegistered({ companyEmail: email, companyName }).catch(() => null);
+  // 受付確認メールを送信（失敗してもエラーにしない）
+  await sendCompanyRegistered({ companyEmail: email, companyName: company_name }).catch(
+    logError("companyRegister:sendMail")
+  );
 
   return { registered: true };
 }
@@ -145,8 +183,11 @@ export async function companyLoginAction(
   _prevState: { error: string } | undefined,
   formData: FormData
 ) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const raw = { email: formData.get("email"), password: formData.get("password") };
+  const result = loginSchema.safeParse(raw);
+  if (!result.success) return { error: result.error.issues[0].message };
+
+  const { email, password } = result.data;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });

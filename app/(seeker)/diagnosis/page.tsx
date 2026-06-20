@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DiagnosisWizard from "@/components/diagnosis/DiagnosisWizard";
+
+export const metadata: Metadata = {
+  title: "価値観診断",
+  description: "20問に答えて、あなたの価値観タイプを診断。淡路島の企業とのマッチングスコアがわかります。",
+};
 
 export default async function DiagnosisPage() {
   const supabase = await createClient();

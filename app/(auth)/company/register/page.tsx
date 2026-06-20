@@ -9,6 +9,27 @@ import Input from "@/components/ui/Input";
 export default function CompanyRegisterPage() {
   const [state, action, pending] = useActionState(companyRegisterAction, undefined);
 
+  if (state?.redirectToLogin) {
+    return (
+      <div className="w-full max-w-sm text-center">
+        <div className="text-5xl mb-6">📋</div>
+        <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-3">
+          すでに登録済みです
+        </h1>
+        <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-6">
+          このメールアドレスはすでに登録されています。<br />
+          企業ログインページからお入りください。
+        </p>
+        <Link
+          href="/company/login"
+          className="inline-block px-6 py-3 rounded-xl bg-[var(--color-brand)] text-white text-sm font-semibold hover:opacity-90 transition"
+        >
+          企業ログインページへ →
+        </Link>
+      </div>
+    );
+  }
+
   if (state?.registered) {
     return (
       <div className="w-full max-w-sm text-center">

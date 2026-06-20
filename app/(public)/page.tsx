@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import CountUp from "@/components/ui/CountUp";
 
 export const metadata: Metadata = {
   title: "Hataraku+淡路島 | 価値観で出会う採用プラットフォーム",
@@ -13,7 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TopPage() {
+export default async function TopPage() {
+  const supabase = await createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = await (supabase as any).rpc("get_platform_stats").single();
+  const stats = [
+    { num: Number(data?.company_count ?? 0), suffix: "社", label: "登録企業数" },
+    { num: Number(data?.user_count ?? 0), suffix: "名", label: "登録ユーザー数" },
+    { num: Number(data?.job_count ?? 0), suffix: "件", label: "求人掲載数" },
+  ];
   return (
     <>
       {/* ヒーロー */}
@@ -24,7 +34,7 @@ export default function TopPage() {
               <p className="animate-fade-up-1 text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-text-muted)] mb-8 md:mb-10">
                 Awaji Island · Values-Based Recruitment Platform
               </p>
-              <h1 className="animate-fade-up-2 text-[clamp(2.8rem,9vw,7.5rem)] font-extrabold leading-[0.95] tracking-tight text-[var(--color-text-primary)]">
+              <h1 className="animate-fade-up-2 text-[clamp(2.2rem,9vw,7.5rem)] font-extrabold leading-[0.95] tracking-tight text-[var(--color-text-primary)]">
                 条件だけで<br />
                 なく、<br />
                 <span className="text-[var(--color-accent)]">価値観</span>で<br />
@@ -57,10 +67,12 @@ export default function TopPage() {
 
         {/* 数字 */}
         <div className="animate-fade-up-4 max-w-7xl mx-auto w-full px-6 pb-12">
-          <div className="flex gap-8 sm:gap-12 md:gap-20">
+          <div className="flex flex-wrap gap-8 sm:gap-12 md:gap-20">
             {stats.map((s) => (
               <div key={s.label}>
-                <p className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)]">{s.value}</p>
+                <p className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)]">
+                  <CountUp value={s.num} suffix={s.suffix} />
+                </p>
                 <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{s.label}</p>
               </div>
             ))}
@@ -156,15 +168,11 @@ export default function TopPage() {
           </Link>
         </div>
       </section>
-    </>
+
+</>
   );
 }
 
-const stats = [
-  { value: "無料", label: "診断・登録" },
-  { value: "4種", label: "価値観タイプ" },
-  { value: "3分", label: "診断所要時間" },
-];
 
 const awajiFacts = [
   {

@@ -113,7 +113,7 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
               className="w-full py-3 rounded-xl bg-[var(--color-accent)] text-white text-sm font-bold text-center hover:bg-[var(--color-accent-dark)] transition-colors"
             >
-              無料登録（無料）
+              無料登録
             </Link>
           </div>
         </div>

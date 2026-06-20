@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { logoutAction } from "@/lib/actions/auth";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 const NAV = [
   { href: "/admin", label: "🏠 管理TOP" },
@@ -15,12 +18,12 @@ const NAV = [
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/admin-login");
 
   const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((email) => email.trim().toLowerCase()).filter(Boolean);
   const email = user.email?.toLowerCase();
   if (!adminEmails || adminEmails.length === 0 || !email || !adminEmails.includes(email)) {
-    redirect("/login");
+    redirect("/admin-login");
   }
 
   return (

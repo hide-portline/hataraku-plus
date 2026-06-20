@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { calcScores, dominantType } from "@/lib/utils/diagnosis";
 import type { DiagnosisAnswer } from "@/lib/utils/diagnosis";
+import { submitDiagnosisSchema, submitCompanyDiagnosisSchema } from "@/lib/validations/diagnosis";
 
 export async function retakeDiagnosis() {
   const supabase = await createClient();
@@ -17,6 +18,9 @@ export async function retakeDiagnosis() {
 }
 
 export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
+  const result = submitDiagnosisSchema.safeParse({ answers });
+  if (!result.success) throw new Error(result.error.issues[0].message);
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -36,13 +40,14 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
     .maybeSingle();
   if (existing) redirect("/diagnosis/result");
 
-  const scores = calcScores(answers);
+  const validatedAnswers = result.data.answers;
+  const scores = calcScores(validatedAnswers);
   const type = dominantType(scores);
 
   // 古い回答を削除してから保存（ページ戻りによる重複防止）
   await supabase.from("user_diagnosis_answers").delete().eq("user_id", user.id);
   const { error: insertError } = await supabase.from("user_diagnosis_answers").insert(
-    answers.map((a) => ({
+    validatedAnswers.map((a) => ({
       user_id: user.id,
       question_id: a.questionId,
       option_id: a.optionId,
@@ -80,16 +85,22 @@ export async function submitUserDiagnosis(answers: DiagnosisAnswer[]) {
 }
 
 export async function submitCompanyDiagnosis(companyId: string, answers: DiagnosisAnswer[]) {
+  const result = submitCompanyDiagnosisSchema.safeParse({ companyId, answers });
+  if (!result.success) throw new Error(result.error.issues[0].message);
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/company/login");
 
-  const scores = calcScores(answers);
+  const { companyId: validCompanyId, answers: validAnswers } = result.data;
+
+  const scores = calcScores(validAnswers);
   const type = dominantType(scores);
 
+  await supabase.from("company_diagnosis_answers").delete().eq("company_id", validCompanyId);
   const { error: insertError } = await supabase.from("company_diagnosis_answers").insert(
-    answers.map((a) => ({
-      company_id: companyId,
+    validAnswers.map((a) => ({
+      company_id: validCompanyId,
       question_id: a.questionId,
       option_id: a.optionId,
       score: a.score,
@@ -98,7 +109,7 @@ export async function submitCompanyDiagnosis(companyId: string, answers: Diagnos
   if (insertError) throw new Error(insertError.message);
 
   const { error: upsertError } = await supabase.from("company_diagnosis_results").upsert({
-    company_id: companyId,
+    company_id: validCompanyId,
     values_type: type,
     score_challenger: scores.challenger,
     score_stable: scores.stable,
@@ -107,7 +118,7 @@ export async function submitCompanyDiagnosis(companyId: string, answers: Diagnos
   }, { onConflict: "company_id" });
   if (upsertError) throw new Error(upsertError.message);
 
-  const { error: updateCompanyError } = await supabase.from("companies").update({ values_type: type }).eq("id", companyId);
+  const { error: updateCompanyError } = await supabase.from("companies").update({ values_type: type }).eq("id", validCompanyId);
   if (updateCompanyError) throw new Error(updateCompanyError.message);
 
   return { success: true };

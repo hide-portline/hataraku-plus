@@ -68,7 +68,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                 <span className="text-xs bg-white/20 px-2.5 py-0.5 rounded-full">{company.industry}</span>
               )}
             </div>
-            <h1 className="text-3xl font-bold mb-2">{company.company_name}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">{company.company_name}</h1>
             {company.vision && <p className="text-white/80 text-lg italic">"{company.vision}"</p>}
           </div>
         </div>

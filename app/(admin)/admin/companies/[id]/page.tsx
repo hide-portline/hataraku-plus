@@ -1,11 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Button from "@/components/ui/Button";
-import { sendCompanyRegistered } from "@/lib/email/send";
+import { z } from "zod";
+
+const companyIdSchema = z.string().uuid("無効な企業IDです");
 
 async function approveCompany(formData: FormData) {
   "use server";
-  const id = formData.get("id") as string;
+  const id = companyIdSchema.parse(formData.get("id"));
   const supabase = await createClient();
   await supabase.from("companies").update({
     status: "approved" as const,
@@ -16,12 +18,12 @@ async function approveCompany(formData: FormData) {
 
 async function rejectCompany(formData: FormData) {
   "use server";
-  const id = formData.get("id") as string;
-  const reason = formData.get("reason") as string;
+  const id = companyIdSchema.parse(formData.get("id"));
+  const reason = z.string().max(1000).parse(formData.get("reason") ?? "");
   const supabase = await createClient();
   await supabase.from("companies").update({
     status: "rejected" as const,
-    rejection_reason: reason,
+    rejection_reason: reason || null,
   }).eq("id", id);
   redirect("/admin/companies");
 }

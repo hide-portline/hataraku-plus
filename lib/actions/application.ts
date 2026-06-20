@@ -2,42 +2,47 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { sendApplicationReceived, sendApplicationConfirm } from "@/lib/email/send";
+import { applyToJobSchema, updateStatusSchema } from "@/lib/validations/application";
+import { logError } from "@/lib/monitoring";
+import type { ApplicationStatus } from "@/types/database";
 
 export async function applyToJob(jobId: string, message?: string) {
+  const result = applyToJobSchema.safeParse({ jobId, message });
+  if (!result.success) return { error: result.error.issues[0].message };
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "ログインが必要です" };
 
-  // 応募レコード作成
   const { error } = await supabase.from("applications").insert({
     user_id: user.id,
-    job_id: jobId,
+    job_id: result.data.jobId,
     status: "applied" as const,
-    message: message ?? null,
+    message: result.data.message ?? null,
   });
   if (error) {
     if (error.code === "23505") return { error: "すでに応募済みです" };
     return { error: "応募に失敗しました" };
   }
 
-  // 求職者情報・求人情報を取得してメール送信
   const [{ data: seeker }, { data: job }] = await Promise.all([
     supabase.from("users").select("name, email").eq("id", user.id).single(),
     supabase.from("jobs")
       .select("title, company_id, companies(company_name, contact_email)")
-      .eq("id", jobId)
+      .eq("id", result.data.jobId)
       .single(),
   ]);
 
   if (seeker && job && job.companies) {
-    const company = Array.isArray(job.companies) ? job.companies[0] : job.companies;
+    const company = Array.isArray(job.companies) ? job.companies[0] : job.companies as { company_name: string; contact_email: string };
+    // メール送信失敗は握り潰さずコンソールに記録
     await Promise.all([
       sendApplicationReceived({
         companyEmail: company.contact_email,
         companyName: company.company_name,
         seekerName: seeker.name,
         jobTitle: job.title,
-        applicationId: jobId,
+        applicationId: result.data.jobId,
       }),
       sendApplicationConfirm({
         seekerEmail: seeker.email,
@@ -45,19 +50,19 @@ export async function applyToJob(jobId: string, message?: string) {
         jobTitle: job.title,
         companyName: company.company_name,
       }),
-    ]);
+    ]).catch(logError("applyToJob:sendMail"));
   }
 
   return { success: true };
 }
 
 export async function updateApplicationStatus(applicationId: string, status: string) {
+  const result = updateStatusSchema.safeParse({ applicationId, status });
+  if (!result.success) return { success: false, error: result.error.issues[0].message };
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: "認証が必要です" };
-
-  const VALID_STATUSES = ["applied", "screening", "interview", "offer", "hired", "rejected"];
-  if (!VALID_STATUSES.includes(status)) return { success: false, error: "無効なステータスです" };
 
   // ログインユーザーが所属する企業の求人への応募のみ更新可能
   const { data: membership } = await supabase
@@ -70,11 +75,13 @@ export async function updateApplicationStatus(applicationId: string, status: str
   const { data: application } = await supabase
     .from("applications")
     .select("job_id, jobs(company_id)")
-    .eq("id", applicationId)
+    .eq("id", result.data.applicationId)
     .single();
 
   const jobCompanyId = application?.jobs
-    ? (Array.isArray(application.jobs) ? application.jobs[0]?.company_id : (application.jobs as { company_id: string }).company_id)
+    ? (Array.isArray(application.jobs)
+        ? application.jobs[0]?.company_id
+        : (application.jobs as { company_id: string }).company_id)
     : null;
 
   if (!jobCompanyId || jobCompanyId !== membership.company_id) {
@@ -83,8 +90,8 @@ export async function updateApplicationStatus(applicationId: string, status: str
 
   const { error } = await supabase
     .from("applications")
-    .update({ status: status as import("@/types/database").ApplicationStatus, updated_at: new Date().toISOString() })
-    .eq("id", applicationId);
+    .update({ status: result.data.status as ApplicationStatus, updated_at: new Date().toISOString() })
+    .eq("id", result.data.applicationId);
 
   return { success: !error, error: error?.message };
 }

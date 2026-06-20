@@ -53,7 +53,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
         ← 求人一覧へ
       </Link>
 
-      <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm p-8 mb-6">
+      <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-sm p-5 sm:p-8 mb-6">
         {/* ヘッダー */}
         <div className="flex flex-wrap gap-2 mb-3">
           <span className="text-xs bg-[var(--color-surface)] text-[var(--color-text-secondary)] px-2.5 py-0.5 rounded-full border border-[var(--color-border)]">
