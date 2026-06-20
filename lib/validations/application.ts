@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const uuidSchema = z.string().uuid("無効なIDです");
+// Zod v4 の z.string().uuid() は RFC 4122 バージョンビット必須のため PostgreSQL UUID と互換性なし
+const uuidSchema = z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "無効なIDです");
 
 const applicationStatusEnum = z.enum([
   "applied",
