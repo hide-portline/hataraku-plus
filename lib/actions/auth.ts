@@ -103,13 +103,18 @@ export async function companyRegisterAction(
     return { error: `アカウント作成に失敗しました: ${signUpError.message}` };
   }
   if (!data.user) return { error: "アカウント作成に失敗しました" };
+  // identities が空 = すでに登録済みのメールアドレス（未確認含む）
+  if (data.user.identities?.length === 0) {
+    return { error: "このメールアドレスはすでに登録されています" };
+  }
 
   // 2. public.users を先に作成（メール未確認でもFKエラーが起きないよう）
-  await admin.from("users").upsert({
+  const { error: userUpsertError } = await admin.from("users").upsert({
     id: data.user.id,
     name,
     email,
   }, { onConflict: "id" });
+  if (userUpsertError) return { error: `ユーザー情報の作成に失敗しました: ${userUpsertError.message}` };
 
   // 3. 企業レコードを作成（admin client でRLSをバイパス）
   const { data: company, error: companyError } = await admin
