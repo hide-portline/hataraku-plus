@@ -64,10 +64,29 @@ export default function CompanyRegisterPage() {
             id="company_name" name="company_name" label="会社名" required
             placeholder="株式会社○○"
           />
-          <Input
-            id="industry" name="industry" label="業種" required
-            placeholder="農業・食品、IT、観光 など"
-          />
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="industry" className="text-sm font-semibold text-[var(--color-text-primary)]">
+              業種 <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="industry" name="industry" required
+              className="w-full border border-[var(--color-border)] rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]/30 focus:border-[var(--color-brand)] transition"
+              defaultValue=""
+            >
+              <option value="" disabled>選択してください</option>
+              <option value="農業・漁業">農業・漁業</option>
+              <option value="食品製造・加工">食品製造・加工</option>
+              <option value="観光・宿泊">観光・宿泊</option>
+              <option value="飲食">飲食</option>
+              <option value="IT・テクノロジー">IT・テクノロジー</option>
+              <option value="製造業">製造業</option>
+              <option value="建設・不動産">建設・不動産</option>
+              <option value="医療・福祉">医療・福祉</option>
+              <option value="教育">教育</option>
+              <option value="小売・販売">小売・販売</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
           <Input
             id="location" name="location" label="所在地" required
             placeholder="兵庫県淡路市○○"
