@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { logoutAction, deleteAccountAction } from "@/lib/actions/auth";
+import { logoutAction } from "@/lib/actions/auth";
 import ValuesTypeBadge from "@/components/company/ValuesTypeBadge";
 import Button from "@/components/ui/Button";
+import DeleteAccountButton from "@/components/ui/DeleteAccountButton";
 import type { ValuesType } from "@/types/database";
 
 export default async function MyPage() {
@@ -142,16 +143,7 @@ export default async function MyPage() {
             <p className="text-xs text-[var(--color-text-muted)] mb-5">
               削除すると、診断結果・応募履歴などすべてのデータが完全に消去されます。この操作は取り消せません。
             </p>
-            <form
-              action={deleteAccountAction}
-              onSubmit={(e) => {
-                if (!confirm("本当にアカウントを削除しますか？この操作は取り消せません。")) e.preventDefault();
-              }}
-            >
-              <Button type="submit" variant="outline" size="sm" className="text-red-500 border-red-200 hover:bg-red-50">
-                アカウントを削除する
-              </Button>
-            </form>
+            <DeleteAccountButton />
           </div>
         </div>
       </div>
