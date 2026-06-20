@@ -94,6 +94,15 @@ export async function submitCompanyDiagnosis(companyId: string, answers: Diagnos
 
   const { companyId: validCompanyId, answers: validAnswers } = result.data;
 
+  // 所有権チェック: ログインユーザーがこの企業のメンバーか検証
+  const { data: membership } = await supabase
+    .from("company_members")
+    .select("company_id")
+    .eq("user_id", user.id)
+    .eq("company_id", validCompanyId)
+    .single();
+  if (!membership) throw new Error("権限がありません");
+
   const scores = calcScores(validAnswers);
   const type = dominantType(scores);
 

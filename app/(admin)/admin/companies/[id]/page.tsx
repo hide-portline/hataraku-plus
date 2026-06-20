@@ -1,15 +1,27 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import Button from "@/components/ui/Button";
 import { z } from "zod";
 
 const companyIdSchema = z.string().uuid("無効な企業IDです");
 
+async function assertAdmin() {
+  "use server";
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim().toLowerCase()).filter(Boolean) ?? [];
+  if (!user?.email || !adminEmails.includes(user.email.toLowerCase())) {
+    throw new Error("管理者権限がありません");
+  }
+}
+
 async function approveCompany(formData: FormData) {
   "use server";
+  await assertAdmin();
   const id = companyIdSchema.parse(formData.get("id"));
-  const supabase = await createClient();
-  await supabase.from("companies").update({
+  const admin = createAdminClient();
+  await admin.from("companies").update({
     status: "approved" as const,
     approved_at: new Date().toISOString(),
   }).eq("id", id);
@@ -18,10 +30,11 @@ async function approveCompany(formData: FormData) {
 
 async function rejectCompany(formData: FormData) {
   "use server";
+  await assertAdmin();
   const id = companyIdSchema.parse(formData.get("id"));
   const reason = z.string().max(1000).parse(formData.get("reason") ?? "");
-  const supabase = await createClient();
-  await supabase.from("companies").update({
+  const admin = createAdminClient();
+  await admin.from("companies").update({
     status: "rejected" as const,
     rejection_reason: reason || null,
   }).eq("id", id);

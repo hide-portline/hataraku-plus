@@ -1,7 +1,7 @@
 "use server";
 
 import { getResend, FROM } from "./resend";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type EmailResult = { success: boolean; error?: string };
 
@@ -98,7 +98,7 @@ export async function sendPasswordReset(opts: {
 
 async function logEmail(template: string, toEmail: string, errorMsg?: string) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     await supabase.from("email_logs").insert({
       to_email: toEmail,
       template_name: template,
