@@ -95,7 +95,7 @@ export default async function TopPage() {
           src="/images/hero.jpg"
           alt="淡路島で働く"
           fill
-          className="object-cover"
+          className="object-cover animate-hero-drift"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />

@@ -93,6 +93,23 @@ body {
   transform: translateY(0);
 }
 
+/* ── Hero Ken Burns ── */
+@keyframes heroDrift {
+  0%   { transform: scale(1.0) translate(0%, 0%); }
+  33%  { transform: scale(1.06) translate(-1%, -0.5%); }
+  66%  { transform: scale(1.04) translate(0.5%, -1%); }
+  100% { transform: scale(1.0) translate(0%, 0%); }
+}
+.animate-hero-drift {
+  animation: heroDrift 24s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ── カーソル ── */
+a, button, [role="button"], select, label[for], input[type="submit"], input[type="button"] {
+  cursor: pointer;
+}
+
 /* ── スクロールバー ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
