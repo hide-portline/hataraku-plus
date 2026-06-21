@@ -92,7 +92,7 @@ export default async function TopPage() {
       {/* ━━━━ HERO ━━━━ */}
       <section className="relative min-h-[88vh] flex items-end overflow-hidden">
         <Image
-          src="https://picsum.photos/seed/hataraku-hero/1920/1080"
+          src="/images/hero.jpg"
           alt="淡路島で働く"
           fill
           className="object-cover"

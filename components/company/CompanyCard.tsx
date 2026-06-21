@@ -23,15 +23,14 @@ export default function CompanyCard({ company }: Props) {
   return (
     <Link href={`/companies/${company.id}`} className="group block">
       {/* 写真エリア */}
-      <div className={`relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 ${fallbackBg}`}>
-        {company.photo_urls?.[0] ? (
-          <Image
-            src={company.photo_urls[0]}
-            alt={company.company_name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
+      <div className={`relative w-full aspect-[5/3] rounded-2xl overflow-hidden mb-4 ${fallbackBg}`}>
+        <Image
+          src={company.photo_urls?.[0] ?? `https://picsum.photos/seed/co-${company.id.slice(0, 8)}/600/360`}
+          alt={company.company_name}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        {!company.photo_urls?.[0] && (
           <p className="absolute top-2 right-3 text-white/20 text-[80px] font-extrabold leading-none select-none">
             {company.company_name.charAt(0)}
           </p>

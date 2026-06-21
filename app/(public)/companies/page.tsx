@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import CompanyCard from "@/components/company/CompanyCard";
 import CompanyFilters from "@/components/company/CompanyFilters";
@@ -86,31 +85,20 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
   return (
     <div className="min-h-screen">
       {/* ━━ HERO ━━ */}
-      <div className="border-b border-[var(--color-border)] overflow-hidden">
+      <div className="border-b border-[var(--color-border)]">
         <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4">
-                淡路島の企業を、文化や価値観から探せます。<br />あなたに合う一社と、きっと出会える。
-              </p>
-              <h1 className="text-[clamp(3rem,8vw,5rem)] font-extrabold leading-[0.95] tracking-tight text-[var(--color-text-primary)]">
-                企業を<br />探す
+              <h1 className="text-[clamp(2.5rem,7vw,5rem)] font-extrabold leading-[0.95] tracking-tight text-[var(--color-text-primary)] mb-4">
+                企業を探す
               </h1>
+              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
+                淡路島の企業を、文化や価値観から探せます。あなたに合う一社と、きっと出会える。
+              </p>
             </div>
-            <div className="relative hidden md:block w-80 h-52 rounded-2xl overflow-hidden shrink-0">
-              <Image
-                src="https://picsum.photos/seed/awaji-bridge/800/500"
-                alt="淡路島"
-                fill
-                className="object-cover"
-              />
-              <div className="absolute bottom-4 right-4 bg-white rounded-xl px-5 py-3 shadow-lg text-right">
-                <p className="text-xs text-[var(--color-text-muted)]">掲載企業数</p>
-                <p className="text-3xl font-extrabold text-[var(--color-text-primary)] leading-none mt-0.5">
-                  {totalAllCount}<span className="text-base ml-1 font-bold">社</span>
-                </p>
-              </div>
-            </div>
+            <span className="shrink-0 inline-block px-5 py-2 rounded-full border border-[var(--color-border)] text-sm font-extrabold text-[var(--color-text-primary)]">
+              {totalAllCount} 社掲載中
+            </span>
           </div>
         </div>
       </div>
