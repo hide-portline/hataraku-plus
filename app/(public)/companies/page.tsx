@@ -1,24 +1,32 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import CompanyCard from "@/components/company/CompanyCard";
 import CompanyFilters from "@/components/company/CompanyFilters";
 import Pagination from "@/components/ui/Pagination";
 import Reveal from "@/components/ui/Reveal";
+import type { ValuesType } from "@/types/database";
 
 export const metadata: Metadata = {
-  title: "企業一覧",
-  description: "淡路島で働く企業の一覧。農業・観光・IT・食品加工など多様な業種の企業が価値観とともに掲載されています。移住・UIターン就職にも対応。",
+  title: "企業を探す | Hataraku+淡路島",
+  description: "淡路島の企業を、文化や価値観から探せます。あなたに合う一社と、きっと出会える。",
   openGraph: {
-    title: "企業一覧 | Hataraku+淡路島",
-    description: "淡路島で働く企業を価値観で探す。",
+    title: "企業を探す | Hataraku+淡路島",
+    description: "淡路島の企業を文化・価値観から探す。",
     url: "/companies",
   },
 };
 
 const PAGE_SIZE = 12;
 
-type SearchParams = Promise<{ values_type?: string; page?: string }>;
+type SearchParams = Promise<{
+  values_type?: string;
+  page?: string;
+  q?: string;
+  region?: string;
+  industry?: string;
+}>;
 
 export default async function CompaniesPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
@@ -27,6 +35,29 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
   const currentPage = Math.max(1, parseInt(params.page ?? "1", 10));
   const offset = (currentPage - 1) * PAGE_SIZE;
 
+  // サイドデータ並行取得
+  const [{ data: regions }, { data: allCompanies }] = await Promise.all([
+    supabase.from("regions").select("id, name, slug").eq("is_active", true).order("display_order"),
+    supabase.from("companies").select("industry, values_type").eq("status", "approved"),
+  ]);
+
+  // 業種一覧（重複排除）
+  const industries = [
+    ...new Set(
+      allCompanies?.map((c) => c.industry).filter((v): v is string => !!v) ?? []
+    ),
+  ].sort();
+
+  // タイプ別件数
+  const typeCounts: Record<string, number> = {
+    challenger: allCompanies?.filter((c) => c.values_type === "challenger").length ?? 0,
+    stable:     allCompanies?.filter((c) => c.values_type === "stable").length ?? 0,
+    team:       allCompanies?.filter((c) => c.values_type === "team").length ?? 0,
+    specialist: allCompanies?.filter((c) => c.values_type === "specialist").length ?? 0,
+  };
+  const totalAllCount = allCompanies?.length ?? 0;
+
+  // メインクエリ（フィルタ適用）
   let query = supabase
     .from("companies")
     .select("*, regions(name)", { count: "exact" })
@@ -34,64 +65,85 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
     .order("created_at", { ascending: false })
     .range(offset, offset + PAGE_SIZE - 1);
 
-  if (params.values_type) query = query.eq("values_type", params.values_type as "challenger" | "stable" | "team" | "specialist");
+  if (params.values_type) {
+    query = query.eq("values_type", params.values_type as ValuesType);
+  }
+  if (params.q) {
+    query = query.or(`company_name.ilike.%${params.q}%,description.ilike.%${params.q}%`);
+  }
+  if (params.industry) {
+    query = query.eq("industry", params.industry);
+  }
+  if (params.region) {
+    const regionRow = regions?.find((r) => r.slug === params.region);
+    if (regionRow) query = query.eq("region_id", regionRow.id);
+  }
 
   const { data: companies, count } = await query;
   const totalCount = count ?? 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-  const isFiltered = !!params.values_type;
 
   return (
     <div className="min-h-screen">
-      {/* ヘッダー */}
-      <div className="border-b border-[var(--color-border)]">
-        <div className="max-w-7xl mx-auto px-6 py-10 md:py-24">
-          <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[var(--color-text-muted)] mb-4">
-            Companies
-          </p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold leading-[0.9] tracking-tight text-[var(--color-text-primary)]">
-              企業を<br />探す
-            </h1>
-            <div className="text-right">
-              <p className="text-sm text-[var(--color-text-secondary)] max-w-xs leading-relaxed mb-3">
-                農業・観光・IT・食品加工まで。<br />淡路島で働く企業の価値観を知る。
+      {/* ━━ HERO ━━ */}
+      <div className="border-b border-[var(--color-border)] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10">
+            <div>
+              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4">
+                淡路島の企業を、文化や価値観から探せます。<br />あなたに合う一社と、きっと出会える。
               </p>
-              <span className="inline-block px-4 py-2 rounded-full border border-[var(--color-border)] text-sm font-extrabold text-[var(--color-text-primary)]">
-                {isFiltered ? `${totalCount} 社ヒット` : `${totalCount} 社掲載中`}
-              </span>
+              <h1 className="text-[clamp(3rem,8vw,5rem)] font-extrabold leading-[0.95] tracking-tight text-[var(--color-text-primary)]">
+                企業を<br />探す
+              </h1>
+            </div>
+            <div className="relative hidden md:block w-80 h-52 rounded-2xl overflow-hidden shrink-0">
+              <Image
+                src="https://picsum.photos/seed/awaji-bridge/800/500"
+                alt="淡路島"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute bottom-4 right-4 bg-white rounded-xl px-5 py-3 shadow-lg text-right">
+                <p className="text-xs text-[var(--color-text-muted)]">掲載企業数</p>
+                <p className="text-3xl font-extrabold text-[var(--color-text-primary)] leading-none mt-0.5">
+                  {totalAllCount}<span className="text-base ml-1 font-bold">社</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <Suspense>
+          <CompanyFilters
+            regions={regions ?? []}
+            industries={industries}
+            typeCounts={typeCounts}
+            totalCount={totalAllCount}
+          />
+        </Suspense>
 
-      <Suspense>
-        <CompanyFilters />
-      </Suspense>
-
-      {!companies || companies.length === 0 ? (
-        <div className="py-32 text-center text-[var(--color-text-muted)]">
-          <p className="text-4xl mb-4">🔍</p>
-          <p className="font-semibold">
-            {isFiltered ? "条件に合う企業が見つかりませんでした" : "まもなく企業が掲載されます"}
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
-            {companies.map((c, i) => (
-              <Reveal key={c.id} delay={i % 3 * 80}>
-                <CompanyCard company={c} />
-              </Reveal>
-            ))}
+        {!companies || companies.length === 0 ? (
+          <div className="py-32 text-center text-[var(--color-text-muted)]">
+            <p className="text-4xl mb-4">🔍</p>
+            <p className="font-semibold">条件に合う企業が見つかりませんでした</p>
           </div>
-          <Suspense>
-            <Pagination currentPage={currentPage} totalPages={totalPages} />
-          </Suspense>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {companies.map((c, i) => (
+                <Reveal key={c.id} delay={i % 3 * 80}>
+                  <CompanyCard company={c} />
+                </Reveal>
+              ))}
+            </div>
+            <Suspense>
+              <Pagination currentPage={currentPage} totalPages={totalPages} />
+            </Suspense>
+          </>
+        )}
       </div>
     </div>
   );
