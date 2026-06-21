@@ -239,9 +239,9 @@ export default async function TopPage() {
 
       {/* ━━━━ FEATURED COMPANIES ━━━━ */}
       {companies && companies.length > 0 && (
-        <section className="border-b border-[var(--color-border)] py-20">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-center justify-between mb-8">
+        <section className="border-b border-[var(--color-border)] py-20 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 mb-8">
+            <div className="flex items-center justify-between">
               <h2 className="text-xl font-extrabold text-[var(--color-text-primary)]">淡路島の注目企業</h2>
               <Link
                 href="/companies"
@@ -250,36 +250,37 @@ export default async function TopPage() {
                 すべての企業を見る →
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-webkit-overflow-scrolling:touch]">
-              {companies.map((company) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const r = company.regions as any;
-                const regionName: string | null = Array.isArray(r) ? r[0]?.name : r?.name ?? null;
-                const photo = company.photo_urls?.[0] ?? `https://picsum.photos/seed/co-${company.id.slice(0, 8)}/400/300`;
-                const vt = company.values_type as ValuesType | null;
-                return (
-                  <Link
-                    key={company.id}
-                    href={`/companies/${company.id}`}
-                    className="relative shrink-0 w-52 md:w-60 rounded-2xl overflow-hidden snap-start group"
-                  >
-                    <div className="relative aspect-[4/3]">
-                      <Image src={photo} alt={company.company_name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      {vt && (
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block ${TYPE_BADGE[vt]}`}>
-                          {TYPE_SHORT[vt]}
-                        </span>
-                      )}
-                      <p className="text-white font-extrabold text-sm leading-snug">{company.company_name}</p>
-                      {regionName && <p className="text-white/60 text-xs mt-0.5">{regionName}</p>}
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+          </div>
+          {/* 無限スクロール: 2セット並べてループ */}
+          <div className="flex animate-marquee-slow gap-5 w-max">
+            {[...companies, ...companies].map((company, i) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const r = company.regions as any;
+              const regionName: string | null = Array.isArray(r) ? r[0]?.name : r?.name ?? null;
+              const photo = company.photo_urls?.[0] ?? `https://picsum.photos/seed/co-${company.id.slice(0, 8)}/400/300`;
+              const vt = company.values_type as ValuesType | null;
+              return (
+                <Link
+                  key={`${company.id}-${i}`}
+                  href={`/companies/${company.id}`}
+                  className="relative shrink-0 w-60 rounded-2xl overflow-hidden group"
+                >
+                  <div className="relative w-60 h-40">
+                    <Image src={photo} alt={company.company_name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    {vt && (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block ${TYPE_BADGE[vt]}`}>
+                        {TYPE_SHORT[vt]}
+                      </span>
+                    )}
+                    <p className="text-white font-extrabold text-sm leading-snug">{company.company_name}</p>
+                    {regionName && <p className="text-white/60 text-xs mt-0.5">{regionName}</p>}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}
