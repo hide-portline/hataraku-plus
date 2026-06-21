@@ -7,9 +7,10 @@ import { X, Menu } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/companies", label: "企業を探す" },
-  { href: "/jobs", label: "求人を見る" },
-  { href: "/articles", label: "記事" },
+  { href: "/articles", label: "ストーリー" },
   { href: "/diagnosis", label: "価値観診断" },
+  { href: "/companies", label: "エリアから探す" },
+  { href: "/jobs", label: "掲載企業一覧" },
 ];
 
 export default function Header() {
@@ -56,7 +57,7 @@ export default function Header() {
               href="/register"
               className="text-sm font-semibold bg-[var(--color-accent)] hover:bg-[var(--color-accent-dark)] text-white px-4 py-2 rounded-full transition-colors"
             >
-              無料登録
+              会員登録
             </Link>
           </div>
 
@@ -113,7 +114,7 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
               className="w-full py-3 rounded-xl bg-[var(--color-accent)] text-white text-sm font-bold text-center hover:bg-[var(--color-accent-dark)] transition-colors"
             >
-              無料登録
+              会員登録
             </Link>
           </div>
         </div>
