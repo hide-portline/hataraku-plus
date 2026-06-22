@@ -106,14 +106,14 @@ export default async function TopPage() {
         <div className="relative z-10 bg-white w-full md:w-[48%] min-h-screen flex flex-col justify-center pb-16 pt-32 overflow-visible">
           <div className="pl-12 md:pl-16 pr-4">
             {/* 小さいタグライン */}
-            <p className="text-[var(--color-text-secondary)] text-xl font-medium tracking-wide mb-5">
+            <p className="text-[var(--color-text-secondary)] text-3xl font-medium tracking-wide mb-5">
               出会いから、働く。
             </p>
 
             {/* 大きい見出し3行 */}
             <h1 className="font-hero text-[var(--color-text-primary)] leading-[0.85] mb-10 whitespace-nowrap">
               <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>Hata</span>
-              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>Raku+</span>
+              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>raku+</span>
               <span className="block" style={{ fontSize: "clamp(2.5rem,8vw,7rem)" }}>淡路島</span>
             </h1>
 
