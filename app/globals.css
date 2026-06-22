@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Yuji+Pen+Script&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -109,6 +109,12 @@ body {
 .animate-hero-drift {
   animation: heroDrift 24s ease-in-out infinite;
   will-change: transform;
+}
+
+/* ── 手書きフォント ── */
+.font-handwritten {
+  font-family: 'Yuji Pen Script', cursive;
+  font-weight: 400;
 }
 
 /* ── カーソル ── */
