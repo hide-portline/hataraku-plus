@@ -92,13 +92,13 @@ export default async function TopPage() {
       {/* ━━━━ HERO ━━━━ */}
       <section className="relative min-h-[70vh] flex overflow-hidden">
         {/* 右側：写真（パネル右端から開始して全員映す） */}
-        <div className="absolute inset-y-0 right-0 left-0 md:left-[50%]">
+        <div className="absolute inset-0">
           <Image
             src="/images/hero.jpg"
             alt="淡路島で働く"
             fill
             className="object-cover animate-hero-drift"
-            style={{ objectPosition: "left center" }}
+            style={{ objectPosition: "60% center" }}
             priority
           />
         </div>
