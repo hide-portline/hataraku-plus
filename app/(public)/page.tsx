@@ -91,22 +91,23 @@ export default async function TopPage() {
     <>
       {/* ━━━━ HERO ━━━━ */}
       <section className="relative min-h-[70vh] flex overflow-hidden">
-        {/* 右側：写真 */}
-        <div className="absolute inset-0">
+        {/* 右側：写真（パネル右端から開始して全員映す） */}
+        <div className="absolute inset-y-0 right-0 left-0 md:left-[27%]">
           <Image
             src="/images/hero.jpg"
             alt="淡路島で働く"
             fill
-            className="object-cover animate-hero-drift" style={{ objectPosition: "center center" }}
+            className="object-cover animate-hero-drift"
+            style={{ objectPosition: "left center" }}
             priority
           />
         </div>
 
         {/* 左側：白パネル */}
-        <div className="relative z-10 bg-white w-full md:w-[32%] min-h-[70vh] flex flex-col justify-center pb-12 pt-24 overflow-visible">
-          <div className="pl-12 md:pl-16 pr-4">
-            {/* 小さいタグライン */}
-            <p className="text-[var(--color-text-secondary)] text-5xl font-medium tracking-wide mb-5">
+        <div className="relative z-10 bg-white w-full md:w-[27%] min-h-[70vh] flex flex-col justify-center pb-12 pt-24 overflow-visible">
+          <div className="pl-12 md:pl-16 pr-0">
+            {/* タグライン */}
+            <p className="text-[var(--color-text-secondary)] text-5xl font-medium tracking-wide mb-5 whitespace-nowrap">
               出会いから、働く。
             </p>
 
