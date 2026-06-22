@@ -106,7 +106,7 @@ export default async function TopPage() {
         <div className="relative z-10 bg-white w-full md:w-[48%] min-h-screen flex flex-col justify-center pb-16 pt-32 overflow-visible">
           <div className="pl-12 md:pl-16 pr-4">
             {/* 小さいタグライン */}
-            <p className="text-[var(--color-text-secondary)] text-sm font-medium tracking-wide mb-5">
+            <p className="text-[var(--color-text-secondary)] text-xl font-medium tracking-wide mb-5">
               出会いから、働く。
             </p>
 
