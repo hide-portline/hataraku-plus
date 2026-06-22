@@ -90,20 +90,20 @@ export default async function TopPage() {
   return (
     <>
       {/* ━━━━ HERO ━━━━ */}
-      <section className="relative min-h-screen flex overflow-hidden">
+      <section className="relative min-h-[70vh] flex overflow-hidden">
         {/* 右側：写真 */}
         <div className="absolute inset-0">
           <Image
             src="/images/hero.jpg"
             alt="淡路島で働く"
             fill
-            className="object-cover animate-hero-drift" style={{ objectPosition: "30% center" }}
+            className="object-cover animate-hero-drift" style={{ objectPosition: "center center" }}
             priority
           />
         </div>
 
         {/* 左側：白パネル */}
-        <div className="relative z-10 bg-white w-full md:w-[38%] min-h-screen flex flex-col justify-center pb-16 pt-32 overflow-visible">
+        <div className="relative z-10 bg-white w-full md:w-[32%] min-h-[70vh] flex flex-col justify-center pb-12 pt-24 overflow-visible">
           <div className="pl-12 md:pl-16 pr-4">
             {/* 小さいタグライン */}
             <p className="text-[var(--color-text-secondary)] text-5xl font-medium tracking-wide mb-5">
