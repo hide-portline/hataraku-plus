@@ -111,10 +111,10 @@ export default async function TopPage() {
             </p>
 
             {/* 大きい見出し3行 */}
-            <h1 className="font-hero text-[var(--color-text-primary)] mb-10 whitespace-nowrap">
-              <span className="block mb-3" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)", lineHeight: "0.88" }}>Hata</span>
-              <span className="block mb-3" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)", lineHeight: "0.88" }}>raku+</span>
-              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)", lineHeight: "0.88" }}>淡路島</span>
+            <h1 className="font-hero text-[var(--color-text-primary)] mb-10 whitespace-nowrap" style={{ lineHeight: "0.85" }}>
+              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>Hata</span>
+              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>raku+</span>
+              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>淡路島</span>
             </h1>
 
             <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-8 max-w-xs">
