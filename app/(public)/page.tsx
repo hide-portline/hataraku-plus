@@ -90,39 +90,51 @@ export default async function TopPage() {
   return (
     <>
       {/* ━━━━ HERO ━━━━ */}
-      <section className="relative min-h-[88vh] flex items-end overflow-hidden">
-        <Image
-          src="/images/hero.jpg"
-          alt="淡路島で働く"
-          fill
-          className="object-cover animate-hero-drift"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />
-        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-20 pt-32">
-          <h1 className="text-white text-[clamp(2.8rem,8vw,6.5rem)] font-extrabold leading-[1.0] tracking-tight mb-5">
-            出会いから、<br />働く。
-          </h1>
-          <p className="text-white font-bold text-lg md:text-xl mb-4">
-            求人票だけでは、出会えない企業がある。
-          </p>
-          <p className="text-white/70 text-sm leading-relaxed mb-10 max-w-sm">
-            条件や待遇だけでは分からない。企業文化、働く人、価値観。<br />
-            淡路島の企業の魅力を知り、あなたに合う企業と出会おう。
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/diagnosis"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[var(--color-accent)] text-white text-sm font-bold hover:bg-[var(--color-accent-dark)] transition-colors"
-            >
-              価値観診断をはじめる <ArrowRight size={14} />
-            </Link>
-            <Link
-              href="/companies"
-              className="inline-flex items-center px-7 py-3.5 rounded-full bg-white text-[var(--color-text-primary)] text-sm font-bold hover:bg-gray-100 transition-colors"
-            >
-              企業を見る
-            </Link>
+      <section className="relative min-h-screen flex overflow-hidden">
+        {/* 右側：写真 */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero.jpg"
+            alt="淡路島で働く"
+            fill
+            className="object-cover object-center animate-hero-drift"
+            priority
+          />
+        </div>
+
+        {/* 左側：白パネル */}
+        <div className="relative z-10 bg-white w-full md:w-[48%] min-h-screen flex flex-col justify-end pb-16 pt-32 overflow-visible">
+          <div className="pl-12 md:pl-16 pr-4">
+            {/* 小さいタグライン */}
+            <p className="text-[var(--color-text-secondary)] text-sm font-medium tracking-wide mb-5">
+              出会いから、働く。
+            </p>
+
+            {/* 大きい見出し3行 */}
+            <h1 className="font-hero text-[var(--color-text-primary)] leading-[0.85] mb-10 whitespace-nowrap">
+              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>Hata</span>
+              <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)" }}>Raku+</span>
+              <span className="block" style={{ fontSize: "clamp(2.5rem,8vw,7rem)" }}>淡路島</span>
+            </h1>
+
+            <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-8 max-w-xs">
+              求人票だけでは、出会えない企業がある。<br />
+              企業文化、働く人、価値観で出会おう。
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/diagnosis"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[var(--color-accent)] text-white text-sm font-bold hover:bg-[var(--color-accent-dark)] transition-colors"
+              >
+                価値観診断をはじめる <ArrowRight size={14} />
+              </Link>
+              <Link
+                href="/companies"
+                className="inline-flex items-center px-7 py-3.5 rounded-full border border-[var(--color-border)] text-[var(--color-text-primary)] text-sm font-bold hover:bg-gray-50 transition-colors"
+              >
+                企業を見る
+              </Link>
+            </div>
           </div>
         </div>
       </section>
