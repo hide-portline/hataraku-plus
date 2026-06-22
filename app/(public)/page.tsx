@@ -103,7 +103,7 @@ export default async function TopPage() {
         </div>
 
         {/* 左側：白パネル */}
-        <div className="relative z-10 bg-white w-full md:w-[48%] min-h-screen flex flex-col justify-end pb-16 pt-32 overflow-visible">
+        <div className="relative z-10 bg-white w-full md:w-[48%] min-h-screen flex flex-col justify-center pb-16 pt-32 overflow-visible">
           <div className="pl-12 md:pl-16 pr-4">
             {/* 小さいタグライン */}
             <p className="text-[var(--color-text-secondary)] text-sm font-medium tracking-wide mb-5">
