@@ -97,13 +97,13 @@ export default async function TopPage() {
             src="/images/hero.jpg"
             alt="淡路島で働く"
             fill
-            className="object-cover object-center animate-hero-drift"
+            className="object-cover animate-hero-drift" style={{ objectPosition: "30% center" }}
             priority
           />
         </div>
 
         {/* 左側：白パネル */}
-        <div className="relative z-10 bg-white w-full md:w-[48%] min-h-screen flex flex-col justify-center pb-16 pt-32 overflow-visible">
+        <div className="relative z-10 bg-white w-full md:w-[38%] min-h-screen flex flex-col justify-center pb-16 pt-32 overflow-visible">
           <div className="pl-12 md:pl-16 pr-4">
             {/* 小さいタグライン */}
             <p className="text-[var(--color-text-secondary)] text-5xl font-medium tracking-wide mb-5">
