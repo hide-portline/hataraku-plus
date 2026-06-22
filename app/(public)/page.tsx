@@ -100,7 +100,7 @@ export default async function TopPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />
         <div className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-20 pt-32">
-          <h1 className="font-handwritten text-white text-[clamp(2.8rem,8vw,6.5rem)] leading-[1.15] mb-5">
+          <h1 className="text-white text-[clamp(2.8rem,8vw,6.5rem)] font-extrabold leading-[1.0] tracking-tight mb-5">
             出会いから、<br />働く。
           </h1>
           <p className="text-white font-bold text-lg md:text-xl mb-4">
