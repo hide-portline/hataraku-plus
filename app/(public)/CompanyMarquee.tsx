@@ -6,8 +6,8 @@ export function CompanyMarquee({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    if (!ref.current) return;
+    const node = ref.current;
 
     let animId = 0;
     let isPaused = false;
@@ -15,19 +15,17 @@ export function CompanyMarquee({ children }: { children: React.ReactNode }) {
     let startX = 0;
     let startScroll = 0;
 
-    // 自動スクロール
     function step() {
       if (!isPaused && !isDragging) {
-        el.scrollLeft += 0.6;
-        if (el.scrollLeft >= el.scrollWidth / 2) {
-          el.scrollLeft = 0;
+        node.scrollLeft += 0.6;
+        if (node.scrollLeft >= node.scrollWidth / 2) {
+          node.scrollLeft = 0;
         }
       }
       animId = requestAnimationFrame(step);
     }
     animId = requestAnimationFrame(step);
 
-    // マウスドラッグ（window全体で捕捉）
     function onMouseEnter() { isPaused = true; }
     function onMouseLeave() { if (!isDragging) isPaused = false; }
 
@@ -35,38 +33,36 @@ export function CompanyMarquee({ children }: { children: React.ReactNode }) {
       isDragging = true;
       isPaused = true;
       startX = e.clientX;
-      startScroll = el.scrollLeft;
-      el.style.cursor = 'grabbing';
+      startScroll = node.scrollLeft;
+      node.style.cursor = 'grabbing';
       e.preventDefault();
     }
 
     function onMouseMove(e: MouseEvent) {
       if (!isDragging) return;
-      el.scrollLeft = startScroll + (startX - e.clientX);
+      node.scrollLeft = startScroll + (startX - e.clientX);
     }
 
     function onMouseUp() {
       if (!isDragging) return;
       isDragging = false;
-      el.style.cursor = '';
-      // マウスがまだ要素上にいる場合はホバー状態維持
-      const rect = el.getBoundingClientRect();
-      const overEl = document.elementFromPoint(rect.left + 1, rect.top + 1) === el
-        || el.contains(document.elementFromPoint(rect.left + 1, rect.top + 1));
-      if (!overEl) isPaused = false;
+      node.style.cursor = '';
+      const rect = node.getBoundingClientRect();
+      const over = node.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2));
+      if (!over) isPaused = false;
     }
 
-    el.addEventListener('mouseenter', onMouseEnter);
-    el.addEventListener('mouseleave', onMouseLeave);
-    el.addEventListener('mousedown', onMouseDown);
+    node.addEventListener('mouseenter', onMouseEnter);
+    node.addEventListener('mouseleave', onMouseLeave);
+    node.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 
     return () => {
       cancelAnimationFrame(animId);
-      el.removeEventListener('mouseenter', onMouseEnter);
-      el.removeEventListener('mouseleave', onMouseLeave);
-      el.removeEventListener('mousedown', onMouseDown);
+      node.removeEventListener('mouseenter', onMouseEnter);
+      node.removeEventListener('mouseleave', onMouseLeave);
+      node.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
