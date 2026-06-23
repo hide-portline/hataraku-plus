@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+JP:wght@900&family=Yuji+Syuku&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+JP:wght@900&family=Kiwi+Maru:wght@500&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -120,8 +120,8 @@ body {
 
 /* ── 手書きフォント ── */
 .font-handwriting {
-  font-family: 'Yuji Syuku', cursive !important;
-  font-weight: 400;
+  font-family: 'Kiwi Maru', cursive !important;
+  font-weight: 500;
 }
 
 /* ── カーソル ── */
