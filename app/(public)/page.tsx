@@ -142,7 +142,7 @@ export default async function TopPage() {
 
         {/* 右下：白い波形 + 手書きテキスト（波の中にのみ表示） */}
         <div className="absolute inset-0 z-[15] pointer-events-none hidden md:block overflow-hidden">
-          <svg className="w-full h-full" viewBox="0 0 1440 630" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-full h-full" viewBox="0 0 1440 630" preserveAspectRatio="xMaxYMax slice" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <clipPath id="waveClip">
                 <path d="M 300 630 C 480 630, 1020 490, 1440 435 L 1440 630 Z" />
@@ -151,7 +151,7 @@ export default async function TopPage() {
             <path d="M 300 630 C 480 630, 1020 490, 1440 435 L 1440 630 Z" fill="white" />
             <image
               href="/images/tagline-final.png"
-              x={975} y={516}
+              x={1000} y={510}
               width={440} height={120}
               clipPath="url(#waveClip)"
             />
