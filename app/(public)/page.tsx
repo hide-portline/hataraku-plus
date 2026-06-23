@@ -107,6 +107,11 @@ export default async function TopPage() {
         {/* 左側：白パネル */}
         <div className="relative z-10 bg-white w-full md:w-[30%] min-h-[70vh] flex flex-col justify-center pb-12 pt-24 overflow-visible">
           <div className="pl-12 md:pl-16 pr-0">
+            {/* タグライン */}
+            <p className="text-[var(--color-text-secondary)] text-5xl font-medium tracking-wide mb-5 whitespace-nowrap">
+              出会いから、働く。
+            </p>
+
             {/* 大きい見出し3行 */}
             <h1 className="font-hero text-[var(--color-text-primary)] mb-10 whitespace-nowrap">
               <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)", lineHeight: 1, marginBottom: "0.06em" }}>Hata</span>
@@ -135,38 +140,6 @@ export default async function TopPage() {
           </div>
         </div>
 
-        {/* 右下：白い波形 + 曲線に沿った手書きテキスト */}
-        <div className="absolute inset-0 z-20 hidden md:block pointer-events-none overflow-hidden">
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 1440 630"
-            preserveAspectRatio="xMidYMid slice"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <path
-                id="taglineArc"
-                d="M 455 592 C 650 500, 950 472, 1400 420"
-              />
-            </defs>
-            {/* 白い波形（曲線で切り取られた塗り面） */}
-            <path
-              d="M 435 630 C 645 522, 950 495, 1440 443 L 1440 630 Z"
-              fill="white"
-            />
-            {/* 曲線に沿った手書きテキスト */}
-            <text
-              fontFamily="'Kiwi Maru', cursive"
-              fontWeight="500"
-              fontSize="44"
-              fill="#1A1A1A"
-            >
-              <textPath href="#taglineArc" startOffset="2%">
-                出会いから、働く。
-              </textPath>
-            </text>
-          </svg>
-        </div>
       </section>
 
       {/* ━━━━ VALUE TYPES ━━━━ */}
