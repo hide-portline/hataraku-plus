@@ -105,7 +105,7 @@ export default async function TopPage() {
         </div>
 
         {/* 左側：白パネル */}
-        <div className="relative z-10 bg-white w-full md:w-[30%] min-h-[70vh] flex flex-col justify-center pb-12 pt-24 overflow-visible">
+        <div className="relative z-10 bg-white w-full md:w-[30%] md:max-w-[420px] min-h-[70vh] flex flex-col justify-center pb-12 pt-24 overflow-visible">
           <div className="pl-12 md:pl-16 pr-0">
             {/* タグライン（スマホのみ） */}
             <p className="md:hidden font-handwriting text-[var(--color-text-primary)] mb-5 whitespace-nowrap" style={{ fontSize: "clamp(1.5rem, 5vw, 2rem)" }}>
