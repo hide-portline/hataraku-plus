@@ -135,13 +135,37 @@ export default async function TopPage() {
           </div>
         </div>
 
-        {/* 右下：手書き風タグライン */}
-        <div className="absolute bottom-10 right-10 z-20 hidden md:block">
-          <div className="bg-white rounded-[2.5rem] px-10 py-5 -rotate-3 shadow-sm">
-            <p className="font-handwriting text-[var(--color-text-primary)] whitespace-nowrap" style={{ fontSize: "clamp(1.5rem,2.5vw,2.2rem)" }}>
-              出会いから、働く。
-            </p>
-          </div>
+        {/* 右下：白い波形 + 曲線に沿った手書きテキスト */}
+        <div className="absolute inset-0 z-20 hidden md:block pointer-events-none overflow-hidden">
+          <svg
+            className="w-full h-full"
+            viewBox="0 0 1440 630"
+            preserveAspectRatio="xMidYMid slice"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <path
+                id="taglineArc"
+                d="M 455 592 C 650 500, 950 472, 1400 420"
+              />
+            </defs>
+            {/* 白い波形（曲線で切り取られた塗り面） */}
+            <path
+              d="M 435 630 C 645 522, 950 495, 1440 443 L 1440 630 Z"
+              fill="white"
+            />
+            {/* 曲線に沿った手書きテキスト */}
+            <text
+              fontFamily="'Kiwi Maru', cursive"
+              fontWeight="500"
+              fontSize="44"
+              fill="#1A1A1A"
+            >
+              <textPath href="#taglineArc" startOffset="2%">
+                出会いから、働く。
+              </textPath>
+            </text>
+          </svg>
         </div>
       </section>
 
