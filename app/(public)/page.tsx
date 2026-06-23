@@ -151,7 +151,7 @@ export default async function TopPage() {
             <path d="M 300 630 C 480 630, 1020 490, 1440 435 L 1440 630 Z" fill="white" />
             <image
               href="/images/tagline-final.png"
-              x={1000} y={510}
+              x={920} y={510}
               width={440} height={120}
               clipPath="url(#waveClip)"
             />
