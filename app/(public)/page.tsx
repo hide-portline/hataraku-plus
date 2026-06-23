@@ -107,6 +107,11 @@ export default async function TopPage() {
         {/* 左側：白パネル */}
         <div className="relative z-10 bg-white w-full md:w-[30%] min-h-[70vh] flex flex-col justify-center pb-12 pt-24 overflow-visible">
           <div className="pl-12 md:pl-16 pr-0">
+            {/* タグライン（スマホのみ） */}
+            <p className="md:hidden font-handwriting text-[var(--color-text-primary)] mb-5 whitespace-nowrap" style={{ fontSize: "clamp(1.5rem, 5vw, 2rem)" }}>
+              出会いから、働く。
+            </p>
+
             {/* 大きい見出し3行 */}
             <h1 className="font-hero text-[var(--color-text-primary)] mb-10 whitespace-nowrap">
               <span className="block" style={{ fontSize: "clamp(3rem,9.5vw,8.5rem)", lineHeight: 1, marginBottom: "0.06em" }}>Hata</span>
@@ -138,7 +143,7 @@ export default async function TopPage() {
         {/* 右下：白い波形 */}
         <div className="absolute inset-0 z-[15] pointer-events-none hidden md:block overflow-hidden">
           <svg className="w-full h-full" viewBox="0 0 1440 630" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 370 630 C 660 608, 1050 528, 1440 455 L 1440 630 Z" fill="white" />
+            <path d="M 300 630 C 480 630, 1020 490, 1440 435 L 1440 630 Z" fill="white" />
           </svg>
         </div>
 
