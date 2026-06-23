@@ -154,7 +154,7 @@ export default async function TopPage() {
               x={950} y={510}
               width={440} height={120}
               clipPath="url(#waveClip)"
-              transform="rotate(-6, 1170, 570)"
+              className="animate-tagline-in"
             />
           </svg>
         </div>
