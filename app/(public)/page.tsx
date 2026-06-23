@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import type { ValuesType, ArticleType } from "@/types/database";
+import { CompanyMarquee } from "./CompanyMarquee";
 
 export const metadata: Metadata = {
   title: "Hataraku+淡路島 | 価値観で出会う採用プラットフォーム",
@@ -265,8 +266,8 @@ export default async function TopPage() {
             </div>
           </div>
           {/* 自動流れ + 手動スクロール対応 */}
-          <div className="overflow-x-auto pb-3 [-webkit-overflow-scrolling:touch] cursor-grab active:cursor-grabbing">
-          <div className="flex animate-marquee-slow gap-5 w-max">
+          <CompanyMarquee>
+          <div className="flex gap-5 w-max">
             {[...companies, ...companies].map((company, i) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const r = company.regions as any;
@@ -296,7 +297,7 @@ export default async function TopPage() {
               );
             })}
           </div>
-          </div>
+          </CompanyMarquee>
         </section>
       )}
 
