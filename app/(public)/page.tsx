@@ -150,7 +150,7 @@ export default async function TopPage() {
         {/* 右下：手書きテキスト画像 */}
         <div
           className="absolute z-20 pointer-events-none hidden md:block"
-          style={{ bottom: "12%", right: "8%", width: "clamp(320px, 36vw, 540px)" }}
+          style={{ bottom: "20%", right: "5%", width: "clamp(300px, 33vw, 500px)" }}
         >
           <Image
             src="/images/tagline-v2.png"
