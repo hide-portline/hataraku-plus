@@ -101,15 +101,14 @@ body {
 
 /* ── タグライン ズームイン ── */
 @keyframes taglineIn {
-  0%   { opacity: 0; transform: rotate(-6deg) scale(0); }
-  60%  { opacity: 1; transform: rotate(-6deg) scale(1.12); }
-  80%  { transform: rotate(-6deg) scale(0.96); }
-  100% { opacity: 1; transform: rotate(-6deg) scale(1); }
+  0%   { opacity: 0; transform: rotate(-6deg) translateX(320px); }
+  65%  { opacity: 1; transform: rotate(-6deg) translateX(-10px); }
+  100% { opacity: 1; transform: rotate(-6deg) translateX(0); }
 }
 .animate-tagline-in {
   transform-box: fill-box;
   transform-origin: center;
-  animation: taglineIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+  animation: taglineIn 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.4s both;
   will-change: transform, opacity;
 }
 
