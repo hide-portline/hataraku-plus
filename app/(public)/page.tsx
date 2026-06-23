@@ -147,17 +147,18 @@ export default async function TopPage() {
           </svg>
         </div>
 
-        {/* 右下：手書きテキスト */}
+        {/* 右下：手書きテキスト画像 */}
         <div
           className="absolute z-20 pointer-events-none hidden md:block"
-          style={{ bottom: "13%", right: "7%", transform: "rotate(-16deg)" }}
+          style={{ bottom: "8%", right: "4%", width: "clamp(280px, 30vw, 460px)" }}
         >
-          <span
-            className="font-handwriting text-[var(--color-text-primary)] whitespace-nowrap"
-            style={{ fontSize: "clamp(1.8rem, 2.6vw, 2.8rem)", letterSpacing: "0.03em" }}
-          >
-            出会いから、働く。
-          </span>
+          <Image
+            src="/images/tagline.png"
+            alt="出会いから、働く。"
+            width={920}
+            height={500}
+            className="w-full h-auto"
+          />
         </div>
       </section>
 
