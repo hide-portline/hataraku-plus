@@ -142,13 +142,13 @@ export default async function TopPage() {
 
         {/* 右下：白い波形 + 手書きテキスト（波の中にのみ表示） */}
         <div className="absolute inset-0 z-[15] pointer-events-none hidden md:block overflow-hidden">
-          <svg className="w-full h-full" viewBox="0 0 1440 630" preserveAspectRatio="xMaxYMax slice" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-full h-full" viewBox="0 0 1440 660" preserveAspectRatio="xMaxYMax slice" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <clipPath id="waveClip">
-                <path d="M 300 630 C 480 630, 1020 490, 1440 435 L 1440 630 Z" />
+                <path d="M 300 660 C 480 660, 1020 490, 1440 435 L 1440 660 Z" />
               </clipPath>
             </defs>
-            <path d="M 300 630 C 480 630, 1020 490, 1440 435 L 1440 630 Z" fill="white" />
+            <path d="M 300 660 C 480 660, 1020 490, 1440 435 L 1440 660 Z" fill="white" />
             <image
               href="/images/tagline-final.png"
               x={950} y={510}
