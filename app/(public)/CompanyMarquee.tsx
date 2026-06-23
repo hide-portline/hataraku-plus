@@ -4,50 +4,56 @@ import { useRef, useEffect } from 'react';
 
 export function CompanyMarquee({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  const animRef = useRef<number>(0);
   const isPaused = useRef(false);
-  const isDown = useRef(false);
+  const isDragging = useRef(false);
   const startX = useRef(0);
-  const startScrollLeft = useRef(0);
-  const animFrame = useRef<number>(0);
+  const startScroll = useRef(0);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const speed = 0.6;
 
     function step() {
       if (el && !isPaused.current) {
-        el.scrollLeft += speed;
+        el.scrollLeft += 0.6;
         if (el.scrollLeft >= el.scrollWidth / 2) {
           el.scrollLeft = 0;
         }
       }
-      animFrame.current = requestAnimationFrame(step);
+      animRef.current = requestAnimationFrame(step);
     }
-
-    animFrame.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animFrame.current);
+    animRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animRef.current);
   }, []);
 
   return (
     <div
       ref={ref}
-      className="overflow-x-auto pb-3 cursor-grab active:cursor-grabbing select-none [-webkit-overflow-scrolling:touch]"
-      style={{ scrollbarWidth: 'none' }}
-      onMouseEnter={() => { isPaused.current = true; }}
-      onMouseLeave={() => { isPaused.current = false; isDown.current = false; }}
-      onMouseDown={(e) => {
-        isDown.current = true;
-        startX.current = e.pageX;
-        startScrollLeft.current = ref.current?.scrollLeft ?? 0;
+      className="overflow-x-auto pb-3 select-none"
+      style={{ scrollbarWidth: 'none' } as React.CSSProperties}
+      onPointerEnter={() => { isPaused.current = true; }}
+      onPointerLeave={() => {
+        isPaused.current = false;
+        isDragging.current = false;
       }}
-      onMouseMove={(e) => {
-        if (!isDown.current || !ref.current) return;
-        e.preventDefault();
-        const walk = (e.pageX - startX.current) * 1.5;
-        ref.current.scrollLeft = startScrollLeft.current - walk;
+      onPointerDown={(e) => {
+        if (e.pointerType === 'touch') return;
+        if (!ref.current) return;
+        isDragging.current = true;
+        isPaused.current = true;
+        startX.current = e.clientX;
+        startScroll.current = ref.current.scrollLeft;
+        ref.current.setPointerCapture(e.pointerId);
       }}
-      onMouseUp={() => { isDown.current = false; }}
+      onPointerMove={(e) => {
+        if (!isDragging.current || !ref.current) return;
+        const dx = startX.current - e.clientX;
+        ref.current.scrollLeft = startScroll.current + dx;
+      }}
+      onPointerUp={() => {
+        isDragging.current = false;
+      }}
     >
       {children}
     </div>
