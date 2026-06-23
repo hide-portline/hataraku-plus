@@ -252,7 +252,7 @@ export default async function TopPage() {
 
       {/* ━━━━ FEATURED COMPANIES ━━━━ */}
       {companies && companies.length > 0 && (
-        <section className="border-b border-[var(--color-border)] py-20 overflow-hidden">
+        <section className="border-b border-[var(--color-border)] py-20">
           <div className="max-w-7xl mx-auto px-6 mb-8">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-extrabold text-[var(--color-text-primary)]">淡路島の注目企業</h2>
@@ -264,7 +264,8 @@ export default async function TopPage() {
               </Link>
             </div>
           </div>
-          {/* 無限スクロール: 2セット並べてループ */}
+          {/* 自動流れ + 手動スクロール対応 */}
+          <div className="overflow-x-auto pb-3 [-webkit-overflow-scrolling:touch] cursor-grab active:cursor-grabbing">
           <div className="flex animate-marquee-slow gap-5 w-max">
             {[...companies, ...companies].map((company, i) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -294,6 +295,7 @@ export default async function TopPage() {
                 </Link>
               );
             })}
+          </div>
           </div>
         </section>
       )}
