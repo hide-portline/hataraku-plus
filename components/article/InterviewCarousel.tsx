@@ -71,9 +71,16 @@ export default function InterviewCarousel({ articles }: { articles: Article[] })
           >
             {articles.map((article, i) => {
               const arcColor = ARC_COLORS[i % ARC_COLORS.length];
+              const PORTRAITS = [
+                "https://randomuser.me/api/portraits/women/44.jpg",
+                "https://randomuser.me/api/portraits/men/32.jpg",
+                "https://randomuser.me/api/portraits/men/55.jpg",
+                "https://randomuser.me/api/portraits/women/68.jpg",
+                "https://randomuser.me/api/portraits/men/41.jpg",
+              ];
               const photoSrc =
                 article.thumbnail_url ??
-                `https://picsum.photos/seed/${article.id}/400/500`;
+                PORTRAITS[i % PORTRAITS.length];
 
               return (
                 <Link
@@ -94,13 +101,20 @@ export default function InterviewCarousel({ articles }: { articles: Article[] })
                         {article.title}
                       </h3>
                     </div>
-                    {/* 下部: 名前 + 矢印 */}
+                    {/* 下部: 名前 + 企業名 + 矢印 */}
                     <div className="flex flex-col gap-3">
-                      {article.interviewee_name && (
-                        <p className="text-xs text-[var(--color-text-muted)] tracking-wide">
-                          {article.interviewee_name}
-                        </p>
-                      )}
+                      <div>
+                        {article.interviewee_name && (
+                          <p className="text-xs font-semibold text-[var(--color-text-secondary)] tracking-wide">
+                            {article.interviewee_name}
+                          </p>
+                        )}
+                        {article.companies?.company_name && (
+                          <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5">
+                            {article.companies.company_name}
+                          </p>
+                        )}
+                      </div>
                       <span className="w-8 h-8 rounded-full bg-[#E8331A] text-white inline-flex items-center justify-center text-sm leading-none">
                         →
                       </span>
