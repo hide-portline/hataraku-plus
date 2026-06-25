@@ -28,18 +28,12 @@ export default function CompanyJobCard({ job, photoUrl }: Props) {
     >
       {/* 写真 */}
       <div className="relative aspect-[3/2] bg-[var(--color-surface)]">
-        {photoUrl ? (
-          <Image
-            src={photoUrl}
-            alt={job.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[var(--color-brand)] to-[var(--color-brand-light)] flex items-center justify-center">
-            <span className="text-5xl font-bold text-white/20">{job.title.charAt(0)}</span>
-          </div>
-        )}
+        <Image
+          src={photoUrl ?? `https://picsum.photos/seed/${job.id}/600/400`}
+          alt={job.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+        />
       </div>
 
       {/* テキスト */}
