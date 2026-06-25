@@ -7,12 +7,12 @@ import type { ArticleRow, CompanyRow } from "@/types/database";
 
 type Article = ArticleRow & { companies: Pick<CompanyRow, "company_name"> | null };
 
-const ACCENT_COLORS = [
-  "bg-blue-100",
-  "bg-amber-100",
-  "bg-rose-100",
-  "bg-emerald-100",
-  "bg-violet-100",
+const ARC_COLORS = [
+  "#dce8f5",
+  "#f5e8dc",
+  "#ddf5e8",
+  "#f0dcf5",
+  "#f5f5dc",
 ];
 
 export default function InterviewCarousel({ articles }: { articles: Article[] }) {
@@ -20,33 +20,34 @@ export default function InterviewCarousel({ articles }: { articles: Article[] })
 
   const scroll = (dir: "left" | "right") => {
     if (!ref.current) return;
-    ref.current.scrollBy({ left: dir === "right" ? 540 : -540, behavior: "smooth" });
+    ref.current.scrollBy({ left: dir === "right" ? 520 : -520, behavior: "smooth" });
   };
 
   if (articles.length === 0) return null;
 
   return (
-    <section className="py-16 bg-[var(--color-surface)]">
+    <section className="py-14 bg-white">
       <div className="max-w-7xl mx-auto px-6">
+
         {/* ヘッダー */}
         <div className="flex items-start justify-between mb-10">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
-              <h2 className="text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+              <span className="w-2 h-2 rounded-full bg-[#E8331A] inline-block shrink-0" />
+              <h2 className="text-3xl font-extrabold tracking-tight text-[var(--color-text-primary)]">
                 社員インタビュー
               </h2>
             </div>
-            <p className="text-xs font-semibold tracking-[0.2em] text-[var(--color-text-muted)] ml-4">
+            <p className="text-[10px] font-bold tracking-[0.25em] text-[var(--color-text-muted)] ml-4">
               INTERVIEW
             </p>
           </div>
           <Link
             href="/articles?type=interview"
-            className="flex items-center gap-3 bg-white border border-[var(--color-border)] rounded-full pl-5 pr-2 py-2 text-sm font-semibold text-[var(--color-text-primary)] hover:shadow-md transition-shadow"
+            className="flex items-center gap-3 bg-white border border-[var(--color-border)] rounded-full pl-5 pr-2 py-2 text-sm font-semibold text-[var(--color-text-primary)] shadow-sm hover:shadow transition-shadow"
           >
             人を知る
-            <span className="w-8 h-8 rounded-full bg-[#E8331A] text-white flex items-center justify-center text-base leading-none">
+            <span className="w-8 h-8 rounded-full bg-[#E8331A] text-white flex items-center justify-center text-sm leading-none shrink-0">
               →
             </span>
           </Link>
@@ -58,7 +59,7 @@ export default function InterviewCarousel({ articles }: { articles: Article[] })
           <button
             onClick={() => scroll("left")}
             aria-label="前へ"
-            className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-[var(--color-border)] shadow flex items-center justify-center text-lg hover:shadow-md transition-shadow"
+            className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-[var(--color-border)] shadow-md flex items-center justify-center text-base hover:shadow-lg transition-shadow"
           >
             ←
           </button>
@@ -69,47 +70,61 @@ export default function InterviewCarousel({ articles }: { articles: Article[] })
             className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {articles.map((article, i) => {
-              const accentBg = ACCENT_COLORS[i % ACCENT_COLORS.length];
+              const arcColor = ARC_COLORS[i % ARC_COLORS.length];
               const photoSrc =
                 article.thumbnail_url ??
-                `https://picsum.photos/seed/${article.id}/300/420`;
+                `https://picsum.photos/seed/${article.id}/400/500`;
 
               return (
                 <Link
                   key={article.id}
                   href={`/articles/${article.id}`}
-                  className="group snap-start shrink-0 w-[480px] rounded-2xl bg-white border border-[var(--color-border)] shadow-sm overflow-hidden flex hover:shadow-md transition-shadow duration-200"
+                  className="group snap-start shrink-0 w-[480px] h-[300px] rounded-2xl bg-white border border-[var(--color-border)] shadow-sm overflow-hidden flex hover:shadow-md transition-shadow duration-200"
                 >
-                  {/* 左: テキスト */}
-                  <div className="flex-1 p-7 flex flex-col justify-between min-w-0">
-                    <div>
-                      {/* カテゴリバッジ */}
-                      <span className="inline-block border border-gray-800 rounded-full text-[11px] font-semibold px-3 py-1 mb-5">
-                        {article.companies?.company_name ?? "インタビュー"}
+                  {/* 左: テキストエリア */}
+                  <div className="flex flex-col justify-between p-8 flex-1 min-w-0">
+                    {/* 上部 */}
+                    <div className="flex flex-col gap-5">
+                      {/* 役職バッジ */}
+                      <span className="inline-flex self-start border border-gray-700 rounded-full text-[11px] font-semibold px-3.5 py-1 text-[var(--color-text-primary)] whitespace-nowrap">
+                        {article.interviewee_role ?? article.companies?.company_name ?? "インタビュー"}
                       </span>
                       {/* タイトル */}
-                      <h3 className="text-[1.05rem] font-extrabold leading-snug text-[var(--color-text-primary)] line-clamp-4 group-hover:text-[#E8331A] transition-colors duration-150">
+                      <h3 className="text-[1rem] font-extrabold leading-snug text-[var(--color-text-primary)] line-clamp-4">
                         {article.title}
                       </h3>
                     </div>
-                    {/* 矢印 */}
-                    <div className="mt-6">
+                    {/* 下部: 名前 + 矢印 */}
+                    <div className="flex flex-col gap-3">
+                      {article.interviewee_name && (
+                        <p className="text-xs text-[var(--color-text-muted)] tracking-wide">
+                          {article.interviewee_name}
+                        </p>
+                      )}
                       <span className="w-8 h-8 rounded-full bg-[#E8331A] text-white inline-flex items-center justify-center text-sm leading-none">
                         →
                       </span>
                     </div>
                   </div>
 
-                  {/* 右: 写真 + アーチ背景 */}
-                  <div className={`relative w-48 shrink-0 ${accentBg} overflow-hidden`}>
-                    {/* アーチ形クリップ */}
-                    <div className="absolute inset-x-0 bottom-0 top-8 rounded-tl-[60px] overflow-hidden">
+                  {/* 右: アーチ背景 + 写真 */}
+                  <div className="relative w-[200px] shrink-0 overflow-hidden">
+                    {/* アーチ形の色背景 */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        backgroundColor: arcColor,
+                        borderTopLeftRadius: "120px",
+                      }}
+                    />
+                    {/* 人物写真 */}
+                    <div className="absolute inset-0" style={{ borderTopLeftRadius: "120px", overflow: "hidden" }}>
                       <Image
                         src={photoSrc}
-                        alt={article.title}
+                        alt={article.interviewee_name ?? article.title}
                         fill
                         className="object-cover object-top"
-                        sizes="192px"
+                        sizes="200px"
                       />
                     </div>
                   </div>
@@ -122,7 +137,7 @@ export default function InterviewCarousel({ articles }: { articles: Article[] })
           <button
             onClick={() => scroll("right")}
             aria-label="次へ"
-            className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-[#E8331A] text-white shadow flex items-center justify-center text-lg hover:opacity-90 transition-opacity"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-[#E8331A] text-white shadow-md flex items-center justify-center text-base hover:opacity-90 transition-opacity"
           >
             →
           </button>

@@ -168,6 +168,8 @@ export type ArticleRow = {
   is_published: boolean;
   published_at: string | null;
   created_at: string;
+  interviewee_name: string | null;
+  interviewee_role: string | null;
 };
 
 export type EmailLogRow = {
