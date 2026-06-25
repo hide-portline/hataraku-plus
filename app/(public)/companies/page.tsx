@@ -5,6 +5,7 @@ import CompanyCard from "@/components/company/CompanyCard";
 import CompanyFilters from "@/components/company/CompanyFilters";
 import Pagination from "@/components/ui/Pagination";
 import Reveal from "@/components/ui/Reveal";
+import InterviewCarousel from "@/components/article/InterviewCarousel";
 import type { ValuesType } from "@/types/database";
 
 export const metadata: Metadata = {
@@ -35,9 +36,16 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
   const offset = (currentPage - 1) * PAGE_SIZE;
 
   // サイドデータ並行取得
-  const [{ data: regions }, { data: allCompanies }] = await Promise.all([
+  const [{ data: regions }, { data: allCompanies }, { data: interviews }] = await Promise.all([
     supabase.from("regions").select("id, name, slug").eq("is_active", true).order("display_order"),
     supabase.from("companies").select("industry, values_type").eq("status", "approved"),
+    supabase
+      .from("articles")
+      .select("*, companies(company_name)")
+      .eq("is_published", true)
+      .eq("article_type", "interview")
+      .order("published_at", { ascending: false })
+      .limit(8),
   ]);
 
   // 業種一覧（重複排除）
@@ -102,6 +110,9 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Se
           </div>
         </div>
       </div>
+
+      {/* ━━ 社員インタビュー ━━ */}
+      <InterviewCarousel articles={interviews ?? []} />
 
       <div className="max-w-7xl mx-auto px-6 py-10">
         <Suspense>
