@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ValuesTypeBadge from "@/components/company/ValuesTypeBadge";
-import JobCard from "@/components/job/JobCard";
+import CompanyJobCard from "@/components/job/CompanyJobCard";
 import { VALUES_TYPE_DESCRIPTIONS } from "@/lib/utils/diagnosis";
 import type { ValuesType } from "@/types/database";
 
@@ -127,12 +127,21 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
         {/* 求人一覧 */}
         {publishedJobs.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-4">
-              募集中のポジション <span className="text-sm font-normal text-[var(--color-text-muted)]">({publishedJobs.length}件)</span>
-            </h2>
-            <div className="flex flex-col gap-3">
-              {publishedJobs.map((job: Parameters<typeof JobCard>[0]["job"]) => (
-                <JobCard key={job.id} job={job} />
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
+                募集中のポジション <span className="text-sm font-normal text-[var(--color-text-muted)]">({publishedJobs.length}件)</span>
+              </h2>
+              <Link href="/jobs" className="text-sm text-[var(--color-brand)] hover:underline">
+                すべての求人を見る →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {publishedJobs.map((job: import("@/types/database").JobRow, index: number) => (
+                <CompanyJobCard
+                  key={job.id}
+                  job={job}
+                  photoUrl={company.photo_urls?.[index % (company.photo_urls?.length ?? 1)] ?? null}
+                />
               ))}
             </div>
           </section>
