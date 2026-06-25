@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ValuesTypeBadge from "@/components/company/ValuesTypeBadge";
 import CompanyJobCard from "@/components/job/CompanyJobCard";
+import InterviewCarousel from "@/components/article/InterviewCarousel";
 import { VALUES_TYPE_DESCRIPTIONS } from "@/lib/utils/diagnosis";
 import type { ValuesType } from "@/types/database";
 
@@ -36,12 +37,22 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: company } = await supabase
-    .from("companies")
-    .select(`*, regions(name), jobs(*, companies(company_name, logo_url))`)
-    .eq("id", id)
-    .eq("status", "approved")
-    .single();
+  const [{ data: company }, { data: interviews }] = await Promise.all([
+    supabase
+      .from("companies")
+      .select(`*, regions(name), jobs(*, companies(company_name, logo_url))`)
+      .eq("id", id)
+      .eq("status", "approved")
+      .single(),
+    supabase
+      .from("articles")
+      .select("*, companies(company_name)")
+      .eq("is_published", true)
+      .eq("article_type", "interview")
+      .eq("company_id", id)
+      .order("published_at", { ascending: false })
+      .limit(8),
+  ]);
 
   if (!company) notFound();
 
@@ -147,6 +158,9 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
           </section>
         )}
       </div>
+
+      {/* ━━ 社員インタビュー ━━ */}
+      <InterviewCarousel articles={interviews ?? []} />
     </div>
   );
 }
